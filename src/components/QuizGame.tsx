@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import {
   quizData,
   pickRoundItems,
@@ -23,14 +23,6 @@ type RoundLog = {
   answers: Answers;
   score: number; // 0..4
 };
-
-const QUESTIONS: { kind: QuestionKind; label: string }[] = [
-  { kind: "cat", label: "Categoría" },
-  { kind: "pol", label: "Polaridad" },
-  { kind: "cert", label: "Certeza" },
-  { kind: "temp", label: "Temporalidad" },
-  { kind: "suj", label: "Sujeto de la relación" },
-];
 
 function isCorrect(item: QuizItem, kind: QuestionKind, value: string) {
   switch (kind) {
@@ -141,6 +133,7 @@ export default function QuizGame() {
   const [proposedRule, setProposedRule] = useState("");
   const [localSynonyms, setLocalSynonyms] = useState<string[]>([]);
   const [synonymInput, setSynonymInput] = useState("");
+  const savedLogRef = useRef<RoundLog[] | null>(null);
 
   const current = items[index];
 
@@ -152,16 +145,21 @@ export default function QuizGame() {
   useEffect(() => {
     const raw = localStorage.getItem("semantiar_quiz_stats");
     if (raw) {
-      try {
-        setStats(JSON.parse(raw));
-      } catch (e) {
-        console.error(e);
-      }
+      const loadStats = window.setTimeout(() => {
+        try {
+          setStats(JSON.parse(raw) as GameStats);
+        } catch (e) {
+          console.error(e);
+        }
+      }, 0);
+      return () => window.clearTimeout(loadStats);
     }
+    return undefined;
   }, []);
 
   useEffect(() => {
-    if (phase === "done" && log.length > 0) {
+    if (phase === "done" && log.length > 0 && savedLogRef.current !== log) {
+      savedLogRef.current = log;
       const score = log.reduce((a, r) => a + r.score, 0);
       const max = log.length * 6;
       
@@ -216,10 +214,14 @@ export default function QuizGame() {
             dimensionStats: currentRoundStats
           };
           
-      setStats(newStats);
-      localStorage.setItem("semantiar_quiz_stats", JSON.stringify(newStats));
+      const saveStats = window.setTimeout(() => {
+        setStats(newStats);
+        localStorage.setItem("semantiar_quiz_stats", JSON.stringify(newStats));
+      }, 0);
+      return () => window.clearTimeout(saveStats);
     }
-  }, [phase]);
+    return undefined;
+  }, [difficulty, log, phase, stats]);
 
   const badges = useMemo(() => {
     if (phase !== "done" || log.length === 0) return [];
@@ -535,7 +537,7 @@ export default function QuizGame() {
 
   const subjectSinonimos = encodeURIComponent(`Propuesta de Sinónimos Locales - Caso ${current.caseId}`);
   const bodySinonimos = encodeURIComponent(
-    `Término SNOMED CT: ${current.term} (SCTID: ${current.sctid})\nConcepto literal en la nota: ${current.literal}\n\nSinónimos locales propuestos:\n${localSynonyms.map((s, idx) => `- ${s}`).join("\n")}`
+    `Término SNOMED CT: ${current.term} (SCTID: ${current.sctid})\nConcepto literal en la nota: ${current.literal}\n\nSinónimos locales propuestos:\n${localSynonyms.map((s) => `- ${s}`).join("\n")}`
   );
   const mailtoSinonimos = `mailto:jsanchezviamonte@gmail.com?subject=${subjectSinonimos}&body=${bodySinonimos}`;
 

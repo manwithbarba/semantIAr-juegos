@@ -1,9 +1,9 @@
-name: Deploy Demo to GitHub Pages
+name: Deploy SEMANTIAR Juegos to GitHub Pages
 
 on:
   push:
     branches:
-      - juego
+      - main
 
 permissions:
   contents: write
@@ -35,5 +35,4 @@ jobs:
         with:
           folder: out
           branch: gh-pages
-          target-folder: juego
-          clean: false
+          clean: true
