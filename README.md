@@ -31,3 +31,7 @@ proyecto es:
 
 El dataset incluido es sintético y de demostración. Los datasets privados o
 de calibración no forman parte de este repositorio.
+
+## Explorador de conceptos anotados
+
+La página [`/explorador-conceptos/`](https://manwithbarba.github.io/semantIAr-juegos/explorador-conceptos/) presenta una vista pública agregada de conceptos anotados de SNOMED CT. La publicación incluye 759 SCTID anotados, de los cuales 742 cuentan con embedding para el mapa; no incluye textos clínicos, fragmentos de notas ni identificadores de casos o anotadores.

@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies 📦
         run: npm install
 
+      - name: Verify public data 🔒
+        run: python scripts/verify_public_payloads.py
+
       - name: Build 🚀
         run: npm run build
         env:
