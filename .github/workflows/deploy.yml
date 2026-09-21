@@ -23,10 +23,13 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies 📦
-        run: npm install
+        run: npm ci
 
       - name: Verify public data 🔒
         run: python scripts/verify_public_payloads.py
+
+      - name: Verify explorer contract 🧭
+        run: python scripts/verify_explorer_contract.py
 
       - name: Build 🚀
         run: npm run build
