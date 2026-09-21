@@ -51,12 +51,18 @@ type Payload = {
 type PositionedPoint = Point & { x: number; y: number; color: string; colorLabel: string };
 
 const palette = ["#168f82", "#d97736", "#6e62d7", "#c65378", "#287db3", "#7b9d3c", "#d39b29"];
+const categoryColors: Record<string, string> = {
+  "Hallazgo clínico": "#2563eb",
+  Procedimiento: "#ea580c",
+  "Fármaco": "#9333ea",
+};
 
 function normalize(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 }
 
 function colorFor(label: string) {
+  if (categoryColors[label]) return categoryColors[label];
   let hash = 0;
   for (let index = 0; index < label.length; index += 1) hash = (hash * 31 + label.charCodeAt(index)) | 0;
   return palette[Math.abs(hash) % palette.length];
