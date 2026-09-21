@@ -2,5 +2,5 @@
 2:I[32022,["/semantIAr-juegos/_next/static/chunks/1a8sz-istfpi_.js","/semantIAr-juegos/_next/static/chunks/158myu8e_yme3.js","/semantIAr-juegos/_next/static/chunks/3jj7zlg2imwb7.js"],"default"]
 3:I[97367,["/semantIAr-juegos/_next/static/chunks/1a8sz-istfpi_.js","/semantIAr-juegos/_next/static/chunks/158myu8e_yme3.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","main",null,{"className":"flex-1 flex flex-col","children":["$","$L2",null,{}]}],[["$","script","script-0",{"src":"/semantIAr-juegos/_next/static/chunks/3jj7zlg2imwb7.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"z9hW05z7l93A-OTP4td02"}
+0:{"rsc":["$","$1","c",{"children":[["$","main",null,{"className":"flex-1 flex flex-col","children":["$","$L2",null,{}]}],[["$","script","script-0",{"src":"/semantIAr-juegos/_next/static/chunks/3jj7zlg2imwb7.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"gZHC2JCnd0nRL11-pBXrY"}
 5:null
