@@ -33,9 +33,13 @@ jobs:
         env:
           GITHUB_ACTIONS: "true"
 
+      - name: Disable Jekyll processing 🔗
+        run: touch out/.nojekyll
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: out
           branch: gh-pages
           clean: true
+
