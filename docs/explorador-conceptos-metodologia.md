@@ -227,4 +227,4 @@ Antes de incorporar otro lote se debe revisar finalidad, base legal o consentimi
 - Mantener los contextos únicamente en entornos autorizados y auditar que no entren al artefacto estático.
 - Documentar responsable, fecha de revisión, versión publicada y procedimiento de retiro.
 
-Hasta completar estas etapas, el explorador debe presentarse como prototipo educativo descriptivo y no como herramienta validada de codificación, auditoría clínica o medición de desempeño.
+
