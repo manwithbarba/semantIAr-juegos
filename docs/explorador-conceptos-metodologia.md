@@ -24,17 +24,17 @@ Una referencia publicada puede justificar una hipótesis o un diseño, pero no v
 
 ## Conjunto publicado
 
-El payload generado el 21 de septiembre de 2026 contiene:
+El payload generado el 23 de septiembre de 2026 contiene:
 
 | Elemento | Cantidad | Interpretación |
 |---|---:|---|
-| Apariciones anotadas | 1.400 | Veces que se registró un SCTID en el conjunto de origen. |
-| Casos | 75 | Identificadores de caso distintos antes de la agregación; no implica 75 pacientes. |
-| Anotadores | 27 | Identificadores de anotador distintos antes de la agregación. |
-| Asignaciones caso–anotador | 135 | Unidades de trabajo asignadas; no implica que todos los casos hayan sido anotados por todas las personas. |
-| SCTID anotados | 759 | Conceptos distintos observados al menos una vez. |
-| Conceptos en el mapa | 742 | SCTID con metadatos y vector disponibles en el índice. |
-| SCTID fuera del mapa | 17 | Conceptos sin metadatos recuperables del índice utilizado. |
+| Apariciones anotadas | 1.609 | Veces que se registró un SCTID en el conjunto de origen. |
+| Casos | 80 | Identificadores de caso distintos antes de la agregación; no implica 75 pacientes. |
+| Anotadores | 31 | Identificadores de anotador distintos antes de la agregación. |
+| Asignaciones caso–anotador | 150 | Unidades de trabajo asignadas; no implica que todos los casos hayan sido anotados por todas las personas. |
+| SCTID anotados | 823 | Conceptos distintos observados al menos una vez. |
+| Conceptos en el mapa | 802 | SCTID con metadatos y vector disponibles en el índice. |
+| SCTID fuera del mapa | 21 | Conceptos sin metadatos recuperables del índice utilizado. |
 | Relaciones `is-a` internas | 158 | Relaciones directas cuyos dos extremos están entre los 742 puntos. |
 
 Cada punto conserva el SCTID, el término del índice, la etiqueta semántica, los conteos agregados, las relaciones directas con padres e hijos, dos coordenadas PCA, dos coordenadas t-SNE y seis vecinos vectoriales. La certeza no está incluida en esta vista, aunque sea una dimensión del juego de calibración.

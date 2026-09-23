@@ -18,11 +18,11 @@ Presenta rondas basadas en casos sintéticos y pregunta por categoría, polarida
 
 Presenta una vista pública y agregada del conjunto de conceptos. La publicación actual resume:
 
-- 1.400 apariciones anotadas en 75 casos y por 27 anotadores;
-- 759 SCTID distintos;
-- 742 conceptos con representación vectorial y ubicación en el mapa;
-- 17 SCTID sin metadatos en el índice, que no se ubican en el mapa; y
-- 158 relaciones jerárquicas directas entre conceptos que están dentro del mapa.
+- 1.609 apariciones anotadas en 80 casos y por 31 anotadores;
+- 823 SCTID distintos;
+- 802 conceptos con representación vectorial y ubicación en el mapa;
+- 21 SCTID sin metadatos en el índice, que no se ubican en el mapa; y
+- 177 relaciones jerárquicas directas entre conceptos que están dentro del mapa.
 
 Estas cantidades describen el conjunto publicado; no representan prevalencia clínica, calidad de atención ni desempeño de los anotadores.
 
