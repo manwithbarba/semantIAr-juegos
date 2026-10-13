@@ -55,3 +55,7 @@ GitHub Pages sirve la raíz de la rama `gh-pages`. La consola es un HTML autóno
 ## Verificación realizada
 
 Rondas completas con puntuación exacta en los tres modos; 24 conjuntos de cuatro SCTID distintos con una referencia y tres distractores relacionados; versión FHIR exacta y conceptos activos; posiciones de literales y opciones seleccionables; ausencia de controles o código de importación de archivos. Las notas de adjudicación y otros archivos clínicos de trabajo no forman parte del paquete publicado.
+
+## Documentación separada
+
+El enlace Documentación abre `documentation.html`, con campos técnicos, edición, fuentes y evidencia. Las consignas y opciones del juego usan etiquetas en español sin nombres de archivos ni claves del modelo.

@@ -781,7 +781,8 @@
         <nav class="mode-tabs" aria-label="Cartuchos del sistema">
           <button class="tab-btn active" id="tabMenu" onclick="switchView('menu')">🏠 [F1] Sala Arcade (Inicio)</button>
           <button class="tab-btn" id="tabPlay" onclick="switchView('play')">🎯 [F2] Partida en Curso</button>
-          <button class="tab-btn" id="tabCodex" onclick="switchView('codex')">📚 [F3] Codex 29/09/2026 (Corpus v2)</button>
+          <button class="tab-btn" id="tabCodex" onclick="switchView('codex')">📚 [F3] Biblioteca de ejercicios</button>
+          <a class="tab-btn" href="documentation.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Documentación ↗</a>
           <a class="tab-btn" href="https://github.com/manwithbarba/semantIAr-juegos/issues/new" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Informar un error ↗</a>
         </nav>
 
@@ -825,7 +826,7 @@
 
               <div class="dim-card" id="cardModeAudit">
                 <div class="dim-header">
-                  <span class="dim-title">CARTUCHO 03 // AUDITORÍA 29/09/2026 (FAISS VS HUMANO)</span>
+                  <span class="dim-title">CARTUCHO 03 // REVISIÓN DE CANDIDATOS</span>
                   <span class="badge-chip amber">16 Casos 29/09/2026</span>
                 </div>
                 <p class="dim-help">Evaluá candidatos de recuperación vectorial vs revisión humana.</p>
@@ -973,7 +974,7 @@
     //    - 18 casos clínicos reales desidentificados del corpus SemantIAr
     //      (cubriendo Fácil <130 chars, Normal 130-250 chars, Difícil >250 chars)
     //    - 16 casos de Capa Léxica v2 (lexical_inventory.jsonl)
-    //    - 16 casos de Revisión Terminológica 29/09/2026 (REVIEW_DECISIONS.json)
+    //    - 16 casos de Revisión Terminológica 29/09/2026 
     // =========================================================================
 
 
@@ -1927,6 +1928,9 @@
 
     const SEMANTIC_CHOICE_BANK = {"editionUri":"http://snomed.info/sct/11000221109/version/20260520","cases":{"demo-001":{"reference":{"sctid":"448225001","term":"saturación de oxígeno normal"},"distractors":[{"sctid":"449171008","term":"saturación de oxígeno por debajo del rango de referencia","reason":"95% se describe dentro de rango, no por debajo."},{"sctid":"1351951002","term":"saturación de oxígeno por encima del rango de referencia","reason":"No documenta saturación aumentada."},{"sctid":"389087006","term":"hipoxemia","reason":"No documenta oxigenación sanguínea anormalmente baja."}]},"demo-002":{"reference":{"sctid":"1258985005","term":"ventilación mecánica invasiva"},"distractors":[{"sctid":"428311008","term":"VNI - ventilación no invasiva","reason":"El escenario adaptado documenta intubación y ventilación invasiva; la ventilación no invasiva utiliza una interfaz externa."},{"sctid":"1259025002","term":"terapia con oxígeno nasal de alto flujo","reason":"Aporte de oxígeno no equivale a ventilación mecánica invasiva."},{"sctid":"425696007","term":"asistencia respiratoria manual con bolsa y máscara","reason":"La nota dice conectado a ventilador, no ventilación manual."}]},"demo-003":{"reference":{"sctid":"40648001","term":"producto que contiene fentanilo"},"distractors":[{"sctid":"73572009","term":"producto que contiene morfina","reason":"Opioide distinto de fentanilo."},{"sctid":"108379008","term":"producto que contiene remifentanilo","reason":"Opioide distinto de fentanilo."},{"sctid":"370275005","term":"producto con sufentanilo","reason":"Opioide distinto de fentanilo."}]},"demo-004":{"reference":{"sctid":"430679000","term":"antecedente familiar de diabetes mellitus tipo 2"},"distractors":[{"sctid":"430678008","term":"antecedente familiar de diabetes mellitus tipo 1","reason":"El tipo familiar explícito es 2."},{"sctid":"472969004","term":"antecedente de diabetes mellitus tipo 2","reason":"Se refiere a familiares, no al paciente."},{"sctid":"160402005","term":"antecedente familiar de diabetes gestacional","reason":"No se documenta diabetes gestacional familiar."}]},"demo-005":{"reference":{"sctid":"29857009","term":"dolor de pecho"},"distractors":[{"sctid":"2237002","term":"dolor pleural","reason":"El literal no atribuye relación respiratoria."},{"sctid":"102588006","term":"dolor de la pared torácica","reason":"No identifica origen en pared torácica."},{"sctid":"71884009","term":"dolor precordial","reason":"No delimita la región precordial."}]},"demo-006":{"reference":{"sctid":"68566005","term":"enfermedad infecciosa de las vías urinarias"},"distractors":[{"sctid":"36689008","term":"pielonefritis aguda","reason":"No documenta afectación renal."},{"sctid":"31822004","term":"inflamación de la uretra","reason":"No identifica inflamación uretral."},{"sctid":"720406004","term":"bacteriuria asintomática","reason":"No documenta resultado de cultivo ni ausencia de síntomas."}]},"corpus-007":{"reference":{"sctid":"386661006","term":"fiebre"},"distractors":[{"sctid":"386689009","term":"hipotermia","reason":"Afebril no implica temperatura baja."},{"sctid":"43724002","term":"escalofríos","reason":"No es el concepto negado por afebril."},{"sctid":"42984000","term":"sudor nocturno","reason":"No es el concepto negado por afebril."}]},"corpus-008":{"reference":{"sctid":"43478001","term":"dolor abdominal a la palpación"},"distractors":[{"sctid":"35611005","term":"dolor a la descompresión","reason":"No documenta maniobra de descompresión."},{"sctid":"249545003","term":"defensa abdominal","reason":"No es el dolor a la palpación negado."},{"sctid":"72300008","term":"rigidez abdominal","reason":"No es el dolor a la palpación negado."}]},"corpus-009":{"reference":{"sctid":"57485005","term":"terapia por oxígeno"},"distractors":[{"sctid":"1259025002","term":"terapia con oxígeno nasal de alto flujo","reason":"3 litros por cánula convencional no documentan alto flujo."},{"sctid":"1258985005","term":"ventilación mecánica invasiva","reason":"No documenta intubación ni ventilador."},{"sctid":"18678000","term":"oxigenación hiperbárica","reason":"No documenta cámara hiperbárica."}]},"corpus-010":{"reference":{"sctid":"194828000","term":"síndrome anginoso"},"distractors":[{"sctid":"57054005","term":"IAM","reason":"Angor no equivale a necrosis miocárdica."},{"sctid":"3238004","term":"pericarditis","reason":"Angor no designa inflamación pericárdica."},{"sctid":"281245003","term":"dolor de pecho musculoesquelético","reason":"Angor no designa dolor musculoesquelético."}]},"corpus-011":{"reference":{"sctid":"289260002","term":"hernia epigástrica"},"distractors":[{"sctid":"396347007","term":"hernia umbilical","reason":"Ubicación distinta del epigastrio."},{"sctid":"396232000","term":"hernia inguinal","reason":"Ubicación distinta del epigastrio."},{"sctid":"236037000","term":"hernia por incisión","reason":"No documenta defecto sobre incisión quirúrgica."}]},"corpus-012":{"reference":{"sctid":"408991007","term":"enseñanza de puericultura"},"distractors":[{"sctid":"171044003","term":"educación sobre inmunización","reason":"Puericultura no identifica asesoramiento específico de vacunación."},{"sctid":"967006","term":"educación sobre medicación","reason":"No documenta educación farmacológica."},{"sctid":"58707002","term":"instrucción sobre la higiene bucal","reason":"No documenta educación odontológica."}]},"corpus-013":{"reference":{"sctid":"27658006","term":"producto que contiene amoxicilina"},"distractors":[{"sctid":"31087008","term":"producto que contiene ampicilina","reason":"Aminopenicilina distinta."},{"sctid":"734844004","term":"producto con amoxicilina y ácido clavulánico","reason":"No documenta asociación con clavulanato."},{"sctid":"54887004","term":"producto que contiene cefalexina","reason":"Antibiótico distinto."}]},"corpus-014":{"reference":{"sctid":"223413005","term":"asesoramiento acerca de signos y síntomas"},"distractors":[{"sctid":"967006","term":"educación sobre medicación","reason":"El literal identifica signos de alarma, no medicación."},{"sctid":"63994009","term":"educación sobre profilaxis de las infecciones","reason":"No identifica prevención de infección."},{"sctid":"61310001","term":"educación para la salud - nutrición","reason":"No identifica recomendaciones nutricionales."}]},"corpus-015":{"reference":{"sctid":"230690007","term":"ACV"},"distractors":[{"sctid":"266257000","term":"ataque isquémico transitorio","reason":"No equivale al ACV documentado."},{"sctid":"274100004","term":"hemorragia intracerebral","reason":"La nota especifica ACV isquémico."},{"sctid":"21454007","term":"hemorragia subaracnoidea intracraneal","reason":"La nota especifica ACV isquémico."}]},"corpus-016":{"reference":{"sctid":"1187106001","term":"ultrasonografía Doppler"},"distractors":[{"sctid":"4970003","term":"venografía","reason":"Estudio venoso con contraste, no ecografía Doppler."},{"sctid":"418272005","term":"angiotomografía con contraste","reason":"Modalidad distinta de ultrasonido."},{"sctid":"431508007","term":"angiografía de vaso sanguíneo [como un todo] por RM","reason":"Modalidad distinta de ultrasonido."}]},"corpus-017":{"reference":{"sctid":"90302003","term":"tuberculosis de las meninges cerebrales"},"distractors":[{"sctid":"192644005","term":"meningitis epidémica","reason":"Etiología meningocócica distinta de tuberculosis."},{"sctid":"58170007","term":"meningitis viral","reason":"Etiología distinta."},{"sctid":"154283005","term":"tuberculosis pulmonar","reason":"Localización distinta de meninges."}]},"corpus-018":{"reference":{"sctid":"96034006","term":"producto que contiene azitromicina"},"distractors":[{"sctid":"83999008","term":"producto que contiene claritromicina","reason":"Macrólido distinto."},{"sctid":"30427009","term":"producto que contiene eritromicina","reason":"Macrólido distinto."},{"sctid":"713769006","term":"producto que contiene roxitromicina","reason":"Macrólido distinto."}]},"corpus-019":{"reference":{"sctid":"250570001","term":"evaluación del equilibrio ácido-base"},"distractors":[{"sctid":"3926003","term":"medición de lactato","reason":"Lactato se informa por separado; no equivale a EAB."},{"sctid":"312474003","term":"determinación de niveles de electrólitos en sangre","reason":"Ionograma se informa por separado."},{"sctid":"312471006","term":"determinación de nivel de bicarbonato en sangre","reason":"Un componente aislado no equivale al panel EAB."}]},"corpus-020":{"reference":{"sctid":"35611005","term":"dolor a la descompresión"},"distractors":[{"sctid":"249545003","term":"defensa abdominal","reason":"No equivale a dolor de rebote negado."},{"sctid":"72300008","term":"rigidez abdominal","reason":"No equivale a dolor de rebote negado."},{"sctid":"43478001","term":"dolor abdominal a la palpación","reason":"Palpación directa no equivale a rebote; está presente en otra parte de nota."}]},"corpus-021":{"reference":{"sctid":"765473008","term":"resección de riñón derecho"},"distractors":[{"sctid":"765472003","term":"nefrectomía izquierda","reason":"Lado opuesto."},{"sctid":"1866009","term":"nefrectomía total de ambos riñones","reason":"No documenta extirpación de ambos riñones."},{"sctid":"39834009","term":"inserción de tubo de nefrostomía","reason":"Drenaje renal, no extirpación."}]},"corpus-022":{"reference":{"sctid":"112828007","term":"injerto en puente de arteria femoral a arteria poplítea"},"distractors":[{"sctid":"405482000","term":"puente aortofemoral","reason":"Trayecto anatómico distinto."},{"sctid":"15853003","term":"tromboendarterectomía con injerto de arterias femoral y poplítea","reason":"Endarterectomía no equivale a bypass documentado."},{"sctid":"233281008","term":"angioplastia de la arteria femoral común","reason":"Dilatación endovascular, no injerto-puente."}]},"corpus-023":{"reference":{"sctid":"128477000","term":"absceso"},"distractors":[{"sctid":"123951002","term":"celulitis cutánea","reason":"Infección difusa; alternativa diferencial no literal FLEMON."},{"sctid":"19471005","term":"linfadenitis","reason":"Afectación ganglionar no documentada en literal."},{"sctid":"42982001","term":"sialoadenitis","reason":"Afectación glandular no documentada en literal."}]},"corpus-024":{"reference":{"sctid":"40070004","term":"infección por molusco contagioso"},"distractors":[{"sctid":"57019003","term":"verruga simple","reason":"Lesión viral distinta de molusco."},{"sctid":"13600006","term":"foliculitis","reason":"Alternativa diferencial, no el literal seleccionado."},{"sctid":"240542006","term":"verrugas anogenitales","reason":"Lesión distinta; localización inguinal no basta para identificarla."}]}}};
 
+    [...SEMANTIC_CASES, ...LEXICAL_CASES, ...AUDIT_PR2_CASES].forEach(item => {
+      item.rationale = item.rationale.replace(/(?:REVIEW_DECISIONS\.json|AUDITORIA_Y_CAMBIOS\.md|lexical_inventory\.jsonl|LEXICAL_INVENTORY\.JSONL)/g, "la revisión documentada");
+    });
     const SEMANTIC_OPTIONS = {
       cat: ["Hallazgo clínico", "Procedimiento", "Fármaco"],
       pol: ["Activo", "Negado"],
@@ -1937,18 +1941,18 @@
 
     const LEXICAL_OPTIONS = {
       formType: [
-        { code: "abbreviation", label: "Abreviatura (abbreviation)" },
-        { code: "initialism", label: "Sigla / Inicialismo (initialism)" },
-        { code: "acronym", label: "Acrónimo pronunciable (acronym)" },
-        { code: "alphanumeric", label: "Forma alfanumérica (alphanumeric)" },
-        { code: "symbolic_abbreviation", label: "Abreviatura simbólica (symbolic)" }
+        { code: "abbreviation", label: "Abreviatura" },
+        { code: "initialism", label: "Sigla / Inicialismo" },
+        { code: "acronym", label: "Acrónimo pronunciable" },
+        { code: "alphanumeric", label: "Forma alfanumérica" },
+        { code: "symbolic_abbreviation", label: "Abreviatura simbólica" }
       ],
       function: [
-        { code: "entity", label: "Entidad clínica (entity)" },
-        { code: "result", label: "Resultado (result)" },
-        { code: "value", label: "Valor / Medida (value)" },
-        { code: "modifier", label: "Modificador (modifier)" },
-        { code: "header", label: "Encabezado (header)" }
+        { code: "entity", label: "Entidad clínica" },
+        { code: "result", label: "Resultado" },
+        { code: "value", label: "Valor / Medida" },
+        { code: "modifier", label: "Modificador" },
+        { code: "header", label: "Encabezado" }
       ],
       section: [
         "signos vitales",
@@ -1961,12 +1965,12 @@
 
     const AUDIT_OPTIONS = {
       mappingAction: [
-        { code: "reject_candidate", label: "Rechazar candidato FAISS (reject_candidate)" },
-        { code: "retain_candidate_pending_ontology_validation", label: "Retener pendiente de validación ontológica (retain_candidate)" },
-        { code: "withhold_mapping", label: "Abstener / Retener sin mapeo (withhold_mapping)" }
+        { code: "reject_candidate", label: "Rechazar el candidato" },
+        { code: "retain_candidate_pending_ontology_validation", label: "Retener para revisar el concepto" },
+        { code: "withhold_mapping", label: "Dejar sin asignar un concepto" }
       ],
       auditFlag: [
-        { code: "expansion_candidate_semantic_mismatch", label: "Discordancia semántica expansión vs. candidato FAISS" },
+        { code: "expansion_candidate_semantic_mismatch", label: "El candidato no corresponde al significado" },
         { code: "low_similarity_threshold", label: "Candidato bajo umbral (< 0,70) con error de dominio" },
         { code: "undocumented_lexical_sense", label: "Sentido léxico ambiguo / no documentado o colisión de sigla" },
         { code: "valid_candidate_pending_ontology", label: "Expresión no abreviada plausible pendiente de validación" }
@@ -2420,7 +2424,7 @@
         }
         return `
           <button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="sctid" data-answer-value="${escapeHtml(choice.sctid)}">
-            <div><strong>SCTID ${escapeHtml(choice.sctid)}</strong></div>
+            <div><strong>Código SNOMED CT ${escapeHtml(choice.sctid)}</strong></div>
             <div style="font-size:0.74rem; opacity:0.9;">${escapeHtml(choice.term)}</div>
             ${isConfirmed && choice.reason ? `<div class="dim-help">${escapeHtml(choice.reason)}</div>` : ""}
           </button>
@@ -2463,8 +2467,8 @@
           ${dimCardsHtml}
           <div class="dim-card full-span ${sctidCardClass}">
             <div class="dim-header">
-              <span class="dim-title">6. Concepto de referencia del ejercicio (edición declarada: Argentina 20260520)</span>
-              ${isConfirmed ? `<span class="badge-chip ${chosenSctid === item.sctid ? '' : 'danger'}">${chosenSctid === item.sctid ? '✓ +1 PT (SCTID Exacto)' : '✗ Correcto: ' + item.sctid}</span>` : ''}
+              <span class="dim-title">6. ¿Qué concepto corresponde?</span>
+              ${isConfirmed ? `<span class="badge-chip ${chosenSctid === item.sctid ? '' : 'danger'}">${chosenSctid === item.sctid ? '✓ +1 PT (Código correcto)' : '✗ Correcto: ' + item.sctid}</span>` : ''}
             </div>
             <div class="dim-help">Seleccioná el concepto que corresponde al literal resaltado, sin añadir información que el escenario no documenta:</div>
             <div class="snomed-options-grid">${termBtns}</div>
@@ -2550,7 +2554,6 @@
         </div>
 
         <div class="note-meta-bar">
-          <span>🆔 <strong>Occurrence ID:</strong> <code>${escapeHtml(item.occurrenceId)}</code></span>
           <span>• <strong>Forma breve / sigla:</strong> <code>"${escapeHtml(item.literal)}"</code></span>
         </div>
 
@@ -2566,25 +2569,25 @@
 
         <div class="dimensions-grid">
           <div class="dim-card ${isConfirmed ? (chosenForm === item.formType ? 'correct-card' : 'wrong-card') : ''}">
-            <div class="dim-header"><span class="dim-title">1. ¿Cómo está escrita? (formType)</span></div>
-            <div class="dim-help">Clasificación morfológica según CONTRATO_CAPA_LEXICA_V2.md</div>
+            <div class="dim-header"><span class="dim-title">1. ¿Cómo está escrita?</span></div>
+            <div class="dim-help">Identificá el tipo de forma breve.</div>
             <div class="options-list">${formBtns}</div>
           </div>
 
           <div class="dim-card ${isConfirmed ? (chosenFunc === item.function ? 'correct-card' : 'wrong-card') : ''}">
-            <div class="dim-header"><span class="dim-title">2. ¿Qué papel cumple? (function)</span></div>
+            <div class="dim-header"><span class="dim-title">2. ¿Qué papel cumple?</span></div>
             <div class="dim-help">Función sintáctico-clínica local dentro del fragmento</div>
             <div class="options-list">${funcBtns}</div>
           </div>
 
           <div class="dim-card ${isConfirmed ? (chosenSec === item.section ? 'correct-card' : 'wrong-card') : ''}">
-            <div class="dim-header"><span class="dim-title">3. ¿En qué sección aparece? (section)</span></div>
+            <div class="dim-header"><span class="dim-title">3. ¿En qué sección aparece?</span></div>
             <div class="dim-help">Ubicación estructural dentro de la nota clínica</div>
             <div class="options-list">${secBtns}</div>
           </div>
 
           <div class="dim-card full-span ${isConfirmed ? (chosenExp === item.expansion ? 'correct-card' : 'wrong-card') : ''}">
-            <div class="dim-header"><span class="dim-title">4. ¿Qué significa aquí? (expansion / senseId en lexical_inventory.jsonl)</span></div>
+            <div class="dim-header"><span class="dim-title">4. ¿Qué significa aquí?</span></div>
             <div class="dim-help">Elegí el sentido previsto para este escenario educativo; no constituye validación de todos los usos de la forma:</div>
             <div class="snomed-options-grid">${expBtns}</div>
           </div>
@@ -2647,9 +2650,8 @@
         <div class="retro-panel-header">
           <div>
             <span class="retro-title">🛡️ AUDITORÍA TERMINOLÓGICA 29/09/2026 · CASO ${gameState.currentIndex + 1} DE ${gameState.roundItems.length}</span>
-            <span class="badge-chip amber" style="margin-left:6px;">Revisión #${escapeHtml(item.reviewNumber)} (REVIEW_DECISIONS.json)</span>
+            <span class="badge-chip amber" style="margin-left:6px;">Revisión #${escapeHtml(item.reviewNumber)} </span>
           </div>
-          <span class="badge-chip cyan">Occurrence: ${item.occurrenceId.slice(0, 10)}...</span>
         </div>
 
         <div class="note-terminal">
@@ -2657,7 +2659,7 @@
           <div style="font-size:0.86rem; color:var(--phos-dim); margin-bottom:8px;">${escapeHtml(item.contextNote)}</div>
           <div style="background:#081a10; border:1px dashed var(--accent-amber); padding:8px 12px; border-radius:6px;">
             🤖 <strong>Candidato automático propuesto por SapBERT + FAISS:</strong><br/>
-            <code>${escapeHtml(item.faissCandidate)}</code> · <strong>inferenceScore (Coseno):</strong> <span style="color:var(--accent-amber); font-weight:900;">${item.faissScore.toFixed(4)}</span>
+            <code>${escapeHtml(item.faissCandidate)}</code> · <strong>Similitud:</strong> <span style="color:var(--accent-amber); font-weight:900;">${item.faissScore.toFixed(4)}</span>
           </div>
         </div>
 
@@ -2669,27 +2671,27 @@
 
         <div class="dimensions-grid">
           <div class="dim-card ${isConfirmed ? (chosenAction === item.mappingAction ? 'correct-card' : 'wrong-card') : ''}">
-            <div class="dim-header"><span class="dim-title">1. Decisión sobre el Candidato FAISS (mappingAction)</span></div>
-            <div class="dim-help">¿Qué dictaminó el responsable del proyecto en REVIEW_DECISIONS.json?</div>
+            <div class="dim-header"><span class="dim-title">1. ¿Qué decisión corresponde?</span></div>
+            <div class="dim-help">Elegí la decisión que corresponde al candidato presentado.</div>
             <div class="options-list">${actionBtns}</div>
           </div>
 
           <div class="dim-card ${isConfirmed ? (chosenFlag === item.auditFlag ? 'correct-card' : 'wrong-card') : ''}">
-            <div class="dim-header"><span class="dim-title">2. Diagnóstico Metodológico (auditFlag)</span></div>
-            <div class="dim-help">¿Cuál es el fenómeno terminológico o razón técnica de la revisión?</div>
+            <div class="dim-header"><span class="dim-title">2. ¿Por qué?</span></div>
+            <div class="dim-help">Identificá el motivo de la revisión.</div>
             <div class="options-list">${flagBtns}</div>
           </div>
 
           <div class="dim-card full-span ${isConfirmed ? (chosenSense === item.validatedSense ? 'correct-card' : 'wrong-card') : ''}">
             <div class="dim-header"><span class="dim-title">3. Sentido Léxico / Criterio Aceptado por el Responsable</span></div>
-            <div class="dim-help">Seleccioná la resolución documentada en el 29/09/2026 de semantiar-terminology-corpus:</div>
+            <div class="dim-help">Elegí la interpretación que corresponde a esta aparición.</div>
             <div class="snomed-options-grid">${senseBtns}</div>
           </div>
         </div>
 
         ${isConfirmed ? `
           <div class="feedback-box">
-            <div style="font-weight:800; color:var(--accent-amber); margin-bottom:4px;">📡 FUNDAMENTO EN REVIEW_DECISIONS.JSON (29/09/2026):</div>
+            <div style="font-weight:800; color:var(--accent-amber); margin-bottom:4px;">📡 EXPLICACIÓN DE LA REVISIÓN:</div>
             <p>${escapeHtml(item.rationale)}</p>
           </div>
         ` : ""}
@@ -2879,6 +2881,8 @@
     // =========================================================================
     // 8. CODEX EXPLORER & CARGADOR DE ARCHIVOS JSON/JSONL + PLANTILLA 29/09/2026
     // =========================================================================
+    function optionLabel(options, code) { return options.find(o => o.code === code)?.label || "No informado"; }
+
     function renderCodexTable() {
       const q = (document.getElementById("codexSearch").value || "").toLowerCase().trim();
       const filter = document.getElementById("codexFilter").value;
@@ -2902,7 +2906,7 @@
           rows.push({
             layer: "Léxica v2",
             surface: l.literal,
-            cat: `${l.formType} (${l.function})`,
+            cat: `${optionLabel(LEXICAL_OPTIONS.formType, l.formType)} · ${optionLabel(LEXICAL_OPTIONS.function, l.function)}`,
             ref: l.expansion,
             attrs: `Sección: ${l.section}`,
             meta: `${l.specialty} (${l.status})`
@@ -2914,10 +2918,10 @@
           rows.push({
             layer: `Auditoría 29/09/2026 (#${a.reviewNumber})`,
             surface: a.surface,
-            cat: a.mappingAction,
+            cat: optionLabel(AUDIT_OPTIONS.mappingAction, a.mappingAction),
             ref: `FAISS: ${a.faissCandidate} (${a.faissScore.toFixed(4)})`,
             attrs: `Resolución: ${a.validatedSense}`,
-            meta: a.auditFlag
+            meta: optionLabel(AUDIT_OPTIONS.auditFlag, a.auditFlag)
           });
         });
       }
