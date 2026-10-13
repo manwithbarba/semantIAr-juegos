@@ -782,7 +782,7 @@
           <button class="tab-btn active" id="tabMenu" onclick="switchView('menu')">🏠 [F1] Sala Arcade (Inicio)</button>
           <button class="tab-btn" id="tabPlay" onclick="switchView('play')">🎯 [F2] Partida en Curso</button>
           <button class="tab-btn" id="tabCodex" onclick="switchView('codex')">📚 [F3] Codex 29/09/2026 (Corpus v2)</button>
-          <button class="tab-btn" id="tabLoader" onclick="switchView('loader')">💾 [F4] Cargar JSON/JSONL & Plantilla 29/09/2026</button>
+          <button class="tab-btn" id="tabLoader" onclick="switchView('loader')">📝 [F4] Proponer revisión</button>
         </nav>
 
         <!-- EDUCATIONAL DISCLAIMER -->
@@ -912,9 +912,8 @@
             <div class="retro-panel-header">
               <div class="retro-title">📚 CODEX TERMINOLÓGICO // SEMANTIAR CORPUS v2 (29/09/2026)</div>
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <input type="text" id="codexSearch" aria-label="Buscar referencias y ejercicios" class="search-input" placeholder="Buscar sigla, término o SCTID..." oninput="renderCodexTable()" />
-                <select id="codexFilter" aria-label="Filtrar banco y referencias" class="select-input" onchange="renderCodexTable()">
-<option value="reference">Referencias importadas (sin puntaje)</option>
+                <input type="text" id="codexSearch" aria-label="Buscar ejercicios" class="search-input" placeholder="Buscar sigla, término o SCTID..." oninput="renderCodexTable()" />
+                <select id="codexFilter" aria-label="Filtrar banco" class="select-input" onchange="renderCodexTable()">
                   <option value="all" selected>Todas las capas (6D + Léxica + 29/09/2026)</option>
                   <option value="semantic">Capa Clínica 6D (SNOMED CT)</option>
                   <option value="lexical">Capa Léxica v2 (Formas breves)</option>
@@ -923,7 +922,7 @@
               </div>
             </div>
             <p style="font-size: 0.78rem; color: var(--phos-dim); margin-bottom: 10px;">
-              Explorá los 56 ejercicios incluidos y las referencias que importes. El recurso completo se carga desde sus archivos públicos; esta vista no incluye automáticamente sus 1.560 ocurrencias. Las 16 revisiones educativas son una selección de las 21 decisiones públicas del 29/09/2026.
+              Explorá los 56 ejercicios incluidos. Esta vista contiene el banco del juego; el recurso completo está disponible en el repositorio público. Las 16 revisiones educativas son una selección de las 21 decisiones públicas del 29/09/2026.
             </p>
             <div class="codex-table-wrap">
               <table class="codex-table">
@@ -943,24 +942,9 @@
           </div>
         </section>
 
-        <!-- VIEW 4: JSON/JSONL LOADER & 29/09/2026 ISSUE TEMPLATE GENERATOR -->
+        <!-- VIEW 4: REVIEW PROPOSAL -->
         <section id="viewLoader" class="hidden">
-          <div class="dimensions-grid">
-            <div class="retro-panel" style="margin-bottom:0;">
-              <div class="retro-panel-header">
-                <div class="retro-title">💾 IMPORTADOR DE LOTES JSON / JSONL</div>
-                <span class="badge-chip cyan">Compatible con Anotador & Corpus v2</span>
-              </div>
-              <p style="font-size: 0.78rem; color: var(--phos-dim); margin-bottom: 10px;">
-                Cargá registros del corpus en JSONL, <code>REVIEW_DECISIONS.json</code> o JSON de anotación con <code>cases[].concepts</code> / <code>cases[].lexicalMentions</code>. Se consultan en F3 como referencias, sin convertirse en respuestas puntuables ni inventar contexto. Lectura local, máximo 10 MiB / 10.000 registros. No se conservan notas completas ni identificadores de casos; revisá los términos importados antes de exportarlos.
-              </p>
-              <input type="file" id="jsonFileInput" aria-label="Seleccionar archivo JSON o JSONL de referencia" accept=".json,.jsonl" class="search-input" style="width:100%; margin-bottom: 10px;" onchange="handleFileUpload(event)" />
-              <div id="uploadStatusMsg" role="status" aria-live="polite" style="font-size: 0.78rem; color: var(--accent-amber); margin-bottom: 10px;">
-                Esperando archivo local (.json / .jsonl)...
-              </div>
-              <button class="btn-arcade secondary" onclick="exportCurrentDataset()">⬇️ Exportar referencias importadas (.json)</button>
-            </div>
-
+          <div class="dimensions-grid" style="grid-template-columns:1fr">
             <div class="retro-panel" style="margin-bottom:0;">
               <div class="retro-panel-header">
                 <div class="retro-title">📝 GENERADOR DE REVISIÓN TERMINOLÓGICA (29/09/2026)</div>
@@ -1027,9 +1011,6 @@
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     }
-    const IMPORTED_RECORDS = [];
-    const MAX_IMPORT_BYTES = 10 * 1024 * 1024;
-    const MAX_IMPORT_ROWS = 10000;
 
     const SEMANTIC_CASES = [
       // --- 6 CASOS ORIGINALES DE SEMANTIAR-JUEGOS ---
@@ -1040,13 +1021,13 @@
         specialty: "Guardia / Emergencias",
         mappingStatus: "human_agreement",
 
-        text: "GUARDIA: Paciente hemodinámicamente estable, buena mecánica ventilatoria con SPO2 95% al aire ambiente. Se encuentra afebril, eupneico y lúcido.",
+        text: "GUARDIA: Paciente hemodinámicamente estable, buena mecánica ventilatoria con SPO2 95% al aire ambiente, dentro del rango de referencia. Se encuentra afebril, eupneico y lúcido.",
         literal: "SPO2 95%",
         start: 77,
         end: 85,
         cat: "Hallazgo clínico",
         sctid: "448225001",
-        term: "saturación de oxígeno dentro del rango de referencia (hallazgo)",
+        term: "saturación de oxígeno normal",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1060,13 +1041,13 @@
         specialty: "Terapia Intensiva",
         mappingStatus: "human_agreement",
 
-        text: "PACIENTE EN ARM: Conectado a ventilador en modo espontáneo, adaptado, con BIC FNT a 2 ml/h para analgesia y sedación estable.",
+        text: "PACIENTE EN ARM: Conectado a ventilador mediante tubo endotraqueal en modo espontáneo, adaptado, con BIC FNT a 2 ml/h para analgesia y sedación estable.",
         literal: "en ARM",
         start: 9,
         end: 15,
         cat: "Procedimiento",
         sctid: "1258985005",
-        term: "ventilación mecánica invasiva (procedimiento)",
+        term: "ventilación mecánica invasiva",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1080,18 +1061,18 @@
         specialty: "Terapia Intensiva",
         mappingStatus: "human_agreement",
 
-        text: "PACIENTE EN ARM: Conectado a ventilador en modo espontáneo, adaptado, con BIC FNT a 2 ml/h para analgesia y sedación estable.",
+        text: "PACIENTE EN ARM: Conectado a ventilador mediante tubo endotraqueal en modo espontáneo, adaptado, con BIC FNT a 2 ml/h para analgesia y sedación estable.",
         literal: "BIC FNT",
         start: 74,
         end: 81,
         cat: "Fármaco",
-        sctid: "373492002",
-        term: "producto que contiene fentanilo (producto)",
+        sctid: "40648001",
+        term: "producto que contiene fentanilo",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
         suj: "Paciente",
-        rationale: "BIC FNT refiere a bomba de infusión continua de fentanilo, codificado bajo la jerarquía de Fármaco/Producto medicinal activo."
+        rationale: "FNT refiere a fentanilo; se elige el producto medicinal con ese ingrediente. Morfina, remifentanilo y sufentanilo son ingredientes distintos."
       },
       {
         id: "demo-004",
@@ -1105,13 +1086,13 @@
         start: 52,
         end: 103,
         cat: "Hallazgo clínico",
-        sctid: "422105006",
-        term: "antecedentes familiares de diabetes mellitus tipo 2 (situación)",
+        sctid: "430679000",
+        term: "antecedente familiar de diabetes mellitus tipo 2",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Histórico",
         suj: "Familiar",
-        rationale: "El antecedente corresponde a familiares de primer y segundo grado (Sujeto: Familiar, Temporalidad: Histórico)."
+        rationale: "El literal especifica un antecedente familiar de diabetes tipo 2. No corresponde a un antecedente personal ni a otro tipo de diabetes."
       },
       {
         id: "demo-005",
@@ -1126,7 +1107,7 @@
         end: 112,
         cat: "Hallazgo clínico",
         sctid: "29857009",
-        term: "dolor en el pecho (hallazgo)",
+        term: "dolor de pecho",
         pol: "Negado",
         cert: "Confirmado",
         temp: "Actual",
@@ -1146,7 +1127,7 @@
         end: 97,
         cat: "Hallazgo clínico",
         sctid: "68566005",
-        term: "infección urinaria (hallazgo)",
+        term: "enfermedad infecciosa de las vías urinarias",
         pol: "Activo",
         cert: "Sospecha",
         temp: "Actual",
@@ -1168,7 +1149,7 @@
         end: 61,
         cat: "Hallazgo clínico",
         sctid: "386661006",
-        term: "fiebre (hallazgo)",
+        term: "fiebre",
         pol: "Negado",
         cert: "Confirmado",
         temp: "Actual",
@@ -1188,7 +1169,7 @@
         end: 99,
         cat: "Hallazgo clínico",
         sctid: "43478001",
-        term: "dolor abdominal a la palpación (hallazgo)",
+        term: "dolor abdominal a la palpación",
         pol: "Negado",
         cert: "Confirmado",
         temp: "Actual",
@@ -1208,7 +1189,7 @@
         end: 78,
         cat: "Procedimiento",
         sctid: "57485005",
-        term: "oxigenoterapia (procedimiento)",
+        term: "terapia por oxígeno",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1228,7 +1209,7 @@
         end: 63,
         cat: "Hallazgo clínico",
         sctid: "194828000",
-        term: "angina de pecho (trastorno)",
+        term: "síndrome anginoso",
         pol: "Negado",
         cert: "Confirmado",
         temp: "Actual",
@@ -1248,7 +1229,7 @@
         end: 91,
         cat: "Hallazgo clínico",
         sctid: "289260002",
-        term: "hernia epigástrica (trastorno)",
+        term: "hernia epigástrica",
         pol: "Activo",
         cert: "Sospecha",
         temp: "Actual",
@@ -1268,7 +1249,7 @@
         end: 92,
         cat: "Procedimiento",
         sctid: "408991007",
-        term: "educación en cuidados del niño (procedimiento)",
+        term: "enseñanza de puericultura",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1290,7 +1271,7 @@
         end: 72,
         cat: "Fármaco",
         sctid: "27658006",
-        term: "producto con amoxicilina (producto medicinal)",
+        term: "producto que contiene amoxicilina",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1310,7 +1291,7 @@
         end: 211,
         cat: "Procedimiento",
         sctid: "223413005",
-        term: "educación sobre signos y síntomas (procedimiento)",
+        term: "asesoramiento acerca de signos y síntomas",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1330,7 +1311,7 @@
         end: 52,
         cat: "Hallazgo clínico",
         sctid: "230690007",
-        term: "accidente cerebrovascular (trastorno)",
+        term: "ACV",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Histórico",
@@ -1350,7 +1331,7 @@
         end: 126,
         cat: "Procedimiento",
         sctid: "1187106001",
-        term: "ecografía Doppler (procedimiento)",
+        term: "ultrasonografía Doppler",
         pol: "Activo",
         cert: "Diferencial",
         temp: "Actual",
@@ -1370,7 +1351,7 @@
         end: 136,
         cat: "Hallazgo clínico",
         sctid: "90302003",
-        term: "tuberculosis de las meninges cerebrales (trastorno)",
+        term: "tuberculosis de las meninges cerebrales",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1390,7 +1371,7 @@
         end: 100,
         cat: "Fármaco",
         sctid: "96034006",
-        term: "producto con azitromicina (producto medicinal)",
+        term: "producto que contiene azitromicina",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Histórico",
@@ -1412,7 +1393,7 @@
         end: 201,
         cat: "Procedimiento",
         sctid: "250570001",
-        term: "evaluación del equilibrio ácido-base (procedimiento)",
+        term: "evaluación del equilibrio ácido-base",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Actual",
@@ -1431,13 +1412,13 @@
         start: 201,
         end: 224,
         cat: "Hallazgo clínico",
-        sctid: "83132003",
-        term: "dolor abdominal de rebote (hallazgo)",
+        sctid: "35611005",
+        term: "dolor a la descompresión",
         pol: "Negado",
         cert: "Confirmado",
         temp: "Actual",
         suj: "Paciente",
-        rationale: "La ausencia de reacción peritoneal (signo de rebote/Blumberg negativo) descarta irritación peritoneal aguda: Hallazgo clínico con Polaridad: Negado."
+        rationale: "La expresión sin reacción peritoneal se representa en este ejercicio como dolor a la descompresión con polaridad Negado. No equivale al dolor de la palpación directa ni a la defensa o rigidez."
       },
       {
         id: "corpus-021",
@@ -1451,13 +1432,13 @@
         start: 105,
         end: 124,
         cat: "Procedimiento",
-        sctid: "830152006",
-        term: "nefrectomía derecha (procedimiento)",
+        sctid: "765473008",
+        term: "resección de riñón derecho",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Histórico",
         suj: "Paciente",
-        rationale: "La nefrectomía derecha figura en la sección de antecedentes quirúrgicos ('Cx:') por tumor renal previo, por lo que su Temporalidad es Histórico."
+        rationale: "El antecedente especifica resección del riñón derecho. No documenta resección izquierda ni bilateral; nefrostomía es un procedimiento de drenaje diferente."
       },
       {
         id: "corpus-022",
@@ -1472,7 +1453,7 @@
         end: 225,
         cat: "Procedimiento",
         sctid: "112828007",
-        term: "injerto-puente de arteria femoral a arteria poplítea (procedimiento)",
+        term: "injerto en puente de arteria femoral a arteria poplítea",
         pol: "Activo",
         cert: "Confirmado",
         temp: "Histórico",
@@ -1492,7 +1473,7 @@
         end: 187,
         cat: "Hallazgo clínico",
         sctid: "128477000",
-        term: "absceso (trastorno)",
+        term: "absceso",
         pol: "Activo",
         cert: "Sospecha",
         temp: "Actual",
@@ -1512,7 +1493,7 @@
         end: 224,
         cat: "Hallazgo clínico",
         sctid: "40070004",
-        term: "infección por molusco contagioso (trastorno)",
+        term: "infección por molusco contagioso",
         pol: "Activo",
         cert: "Diferencial",
         temp: "Actual",
@@ -1975,6 +1956,8 @@
       item.faissScore = source.originalCandidate.score;
     });
 
+    const SEMANTIC_CHOICE_BANK = {"editionUri":"http://snomed.info/sct/11000221109/version/20260520","cases":{"demo-001":{"reference":{"sctid":"448225001","term":"saturación de oxígeno normal"},"distractors":[{"sctid":"449171008","term":"saturación de oxígeno por debajo del rango de referencia","reason":"95% se describe dentro de rango, no por debajo."},{"sctid":"1351951002","term":"saturación de oxígeno por encima del rango de referencia","reason":"No documenta saturación aumentada."},{"sctid":"389087006","term":"hipoxemia","reason":"No documenta oxigenación sanguínea anormalmente baja."}]},"demo-002":{"reference":{"sctid":"1258985005","term":"ventilación mecánica invasiva"},"distractors":[{"sctid":"428311008","term":"VNI - ventilación no invasiva","reason":"El escenario adaptado documenta intubación y ventilación invasiva; la ventilación no invasiva utiliza una interfaz externa."},{"sctid":"1259025002","term":"terapia con oxígeno nasal de alto flujo","reason":"Aporte de oxígeno no equivale a ventilación mecánica invasiva."},{"sctid":"425696007","term":"asistencia respiratoria manual con bolsa y máscara","reason":"La nota dice conectado a ventilador, no ventilación manual."}]},"demo-003":{"reference":{"sctid":"40648001","term":"producto que contiene fentanilo"},"distractors":[{"sctid":"73572009","term":"producto que contiene morfina","reason":"Opioide distinto de fentanilo."},{"sctid":"108379008","term":"producto que contiene remifentanilo","reason":"Opioide distinto de fentanilo."},{"sctid":"370275005","term":"producto con sufentanilo","reason":"Opioide distinto de fentanilo."}]},"demo-004":{"reference":{"sctid":"430679000","term":"antecedente familiar de diabetes mellitus tipo 2"},"distractors":[{"sctid":"430678008","term":"antecedente familiar de diabetes mellitus tipo 1","reason":"El tipo familiar explícito es 2."},{"sctid":"472969004","term":"antecedente de diabetes mellitus tipo 2","reason":"Se refiere a familiares, no al paciente."},{"sctid":"160402005","term":"antecedente familiar de diabetes gestacional","reason":"No se documenta diabetes gestacional familiar."}]},"demo-005":{"reference":{"sctid":"29857009","term":"dolor de pecho"},"distractors":[{"sctid":"2237002","term":"dolor pleural","reason":"El literal no atribuye relación respiratoria."},{"sctid":"102588006","term":"dolor de la pared torácica","reason":"No identifica origen en pared torácica."},{"sctid":"71884009","term":"dolor precordial","reason":"No delimita la región precordial."}]},"demo-006":{"reference":{"sctid":"68566005","term":"enfermedad infecciosa de las vías urinarias"},"distractors":[{"sctid":"36689008","term":"pielonefritis aguda","reason":"No documenta afectación renal."},{"sctid":"31822004","term":"inflamación de la uretra","reason":"No identifica inflamación uretral."},{"sctid":"720406004","term":"bacteriuria asintomática","reason":"No documenta resultado de cultivo ni ausencia de síntomas."}]},"corpus-007":{"reference":{"sctid":"386661006","term":"fiebre"},"distractors":[{"sctid":"386689009","term":"hipotermia","reason":"Afebril no implica temperatura baja."},{"sctid":"43724002","term":"escalofríos","reason":"No es el concepto negado por afebril."},{"sctid":"42984000","term":"sudor nocturno","reason":"No es el concepto negado por afebril."}]},"corpus-008":{"reference":{"sctid":"43478001","term":"dolor abdominal a la palpación"},"distractors":[{"sctid":"35611005","term":"dolor a la descompresión","reason":"No documenta maniobra de descompresión."},{"sctid":"249545003","term":"defensa abdominal","reason":"No es el dolor a la palpación negado."},{"sctid":"72300008","term":"rigidez abdominal","reason":"No es el dolor a la palpación negado."}]},"corpus-009":{"reference":{"sctid":"57485005","term":"terapia por oxígeno"},"distractors":[{"sctid":"1259025002","term":"terapia con oxígeno nasal de alto flujo","reason":"3 litros por cánula convencional no documentan alto flujo."},{"sctid":"1258985005","term":"ventilación mecánica invasiva","reason":"No documenta intubación ni ventilador."},{"sctid":"18678000","term":"oxigenación hiperbárica","reason":"No documenta cámara hiperbárica."}]},"corpus-010":{"reference":{"sctid":"194828000","term":"síndrome anginoso"},"distractors":[{"sctid":"57054005","term":"IAM","reason":"Angor no equivale a necrosis miocárdica."},{"sctid":"3238004","term":"pericarditis","reason":"Angor no designa inflamación pericárdica."},{"sctid":"281245003","term":"dolor de pecho musculoesquelético","reason":"Angor no designa dolor musculoesquelético."}]},"corpus-011":{"reference":{"sctid":"289260002","term":"hernia epigástrica"},"distractors":[{"sctid":"396347007","term":"hernia umbilical","reason":"Ubicación distinta del epigastrio."},{"sctid":"396232000","term":"hernia inguinal","reason":"Ubicación distinta del epigastrio."},{"sctid":"236037000","term":"hernia por incisión","reason":"No documenta defecto sobre incisión quirúrgica."}]},"corpus-012":{"reference":{"sctid":"408991007","term":"enseñanza de puericultura"},"distractors":[{"sctid":"171044003","term":"educación sobre inmunización","reason":"Puericultura no identifica asesoramiento específico de vacunación."},{"sctid":"967006","term":"educación sobre medicación","reason":"No documenta educación farmacológica."},{"sctid":"58707002","term":"instrucción sobre la higiene bucal","reason":"No documenta educación odontológica."}]},"corpus-013":{"reference":{"sctid":"27658006","term":"producto que contiene amoxicilina"},"distractors":[{"sctid":"31087008","term":"producto que contiene ampicilina","reason":"Aminopenicilina distinta."},{"sctid":"734844004","term":"producto con amoxicilina y ácido clavulánico","reason":"No documenta asociación con clavulanato."},{"sctid":"54887004","term":"producto que contiene cefalexina","reason":"Antibiótico distinto."}]},"corpus-014":{"reference":{"sctid":"223413005","term":"asesoramiento acerca de signos y síntomas"},"distractors":[{"sctid":"967006","term":"educación sobre medicación","reason":"El literal identifica signos de alarma, no medicación."},{"sctid":"63994009","term":"educación sobre profilaxis de las infecciones","reason":"No identifica prevención de infección."},{"sctid":"61310001","term":"educación para la salud - nutrición","reason":"No identifica recomendaciones nutricionales."}]},"corpus-015":{"reference":{"sctid":"230690007","term":"ACV"},"distractors":[{"sctid":"266257000","term":"ataque isquémico transitorio","reason":"No equivale al ACV documentado."},{"sctid":"274100004","term":"hemorragia intracerebral","reason":"La nota especifica ACV isquémico."},{"sctid":"21454007","term":"hemorragia subaracnoidea intracraneal","reason":"La nota especifica ACV isquémico."}]},"corpus-016":{"reference":{"sctid":"1187106001","term":"ultrasonografía Doppler"},"distractors":[{"sctid":"4970003","term":"venografía","reason":"Estudio venoso con contraste, no ecografía Doppler."},{"sctid":"418272005","term":"angiotomografía con contraste","reason":"Modalidad distinta de ultrasonido."},{"sctid":"431508007","term":"angiografía de vaso sanguíneo [como un todo] por RM","reason":"Modalidad distinta de ultrasonido."}]},"corpus-017":{"reference":{"sctid":"90302003","term":"tuberculosis de las meninges cerebrales"},"distractors":[{"sctid":"192644005","term":"meningitis epidémica","reason":"Etiología meningocócica distinta de tuberculosis."},{"sctid":"58170007","term":"meningitis viral","reason":"Etiología distinta."},{"sctid":"154283005","term":"tuberculosis pulmonar","reason":"Localización distinta de meninges."}]},"corpus-018":{"reference":{"sctid":"96034006","term":"producto que contiene azitromicina"},"distractors":[{"sctid":"83999008","term":"producto que contiene claritromicina","reason":"Macrólido distinto."},{"sctid":"30427009","term":"producto que contiene eritromicina","reason":"Macrólido distinto."},{"sctid":"713769006","term":"producto que contiene roxitromicina","reason":"Macrólido distinto."}]},"corpus-019":{"reference":{"sctid":"250570001","term":"evaluación del equilibrio ácido-base"},"distractors":[{"sctid":"3926003","term":"medición de lactato","reason":"Lactato se informa por separado; no equivale a EAB."},{"sctid":"312474003","term":"determinación de niveles de electrólitos en sangre","reason":"Ionograma se informa por separado."},{"sctid":"312471006","term":"determinación de nivel de bicarbonato en sangre","reason":"Un componente aislado no equivale al panel EAB."}]},"corpus-020":{"reference":{"sctid":"35611005","term":"dolor a la descompresión"},"distractors":[{"sctid":"249545003","term":"defensa abdominal","reason":"No equivale a dolor de rebote negado."},{"sctid":"72300008","term":"rigidez abdominal","reason":"No equivale a dolor de rebote negado."},{"sctid":"43478001","term":"dolor abdominal a la palpación","reason":"Palpación directa no equivale a rebote; está presente en otra parte de nota."}]},"corpus-021":{"reference":{"sctid":"765473008","term":"resección de riñón derecho"},"distractors":[{"sctid":"765472003","term":"nefrectomía izquierda","reason":"Lado opuesto."},{"sctid":"1866009","term":"nefrectomía total de ambos riñones","reason":"No documenta extirpación de ambos riñones."},{"sctid":"39834009","term":"inserción de tubo de nefrostomía","reason":"Drenaje renal, no extirpación."}]},"corpus-022":{"reference":{"sctid":"112828007","term":"injerto en puente de arteria femoral a arteria poplítea"},"distractors":[{"sctid":"405482000","term":"puente aortofemoral","reason":"Trayecto anatómico distinto."},{"sctid":"15853003","term":"tromboendarterectomía con injerto de arterias femoral y poplítea","reason":"Endarterectomía no equivale a bypass documentado."},{"sctid":"233281008","term":"angioplastia de la arteria femoral común","reason":"Dilatación endovascular, no injerto-puente."}]},"corpus-023":{"reference":{"sctid":"128477000","term":"absceso"},"distractors":[{"sctid":"123951002","term":"celulitis cutánea","reason":"Infección difusa; alternativa diferencial no literal FLEMON."},{"sctid":"19471005","term":"linfadenitis","reason":"Afectación ganglionar no documentada en literal."},{"sctid":"42982001","term":"sialoadenitis","reason":"Afectación glandular no documentada en literal."}]},"corpus-024":{"reference":{"sctid":"40070004","term":"infección por molusco contagioso"},"distractors":[{"sctid":"57019003","term":"verruga simple","reason":"Lesión viral distinta de molusco."},{"sctid":"13600006","term":"foliculitis","reason":"Alternativa diferencial, no el literal seleccionado."},{"sctid":"240542006","term":"verrugas anogenitales","reason":"Lesión distinta; localización inguinal no basta para identificarla."}]}}};
+
     const SEMANTIC_OPTIONS = {
       cat: ["Hallazgo clínico", "Procedimiento", "Fármaco"],
       pol: ["Activo", "Negado"],
@@ -2322,21 +2305,13 @@
       // Precompute multiple-choice options for each item so they don't reshuffle on click
       gameState.roundItems.forEach(item => {
         if (gameState.mode === "semantic") {
-          const otherTerms = SEMANTIC_CASES
-            .filter(c => c.sctid !== item.sctid)
-            .map(c => ({ sctid: c.sctid, term: c.term }));
-          const uniqueOthers = [];
-          const seen = new Set([item.sctid]);
-          for (const o of shuffleArray(otherTerms)) {
-            if (!seen.has(o.sctid)) {
-              seen.add(o.sctid);
-              uniqueOthers.push(o);
-            }
-            if (uniqueOthers.length >= 3) break;
+          const prepared = SEMANTIC_CHOICE_BANK.cases[item.id];
+          if (!prepared || prepared.reference.sctid !== item.sctid || prepared.distractors.length !== 3) {
+            throw new Error("No hay opciones verificadas para este ejercicio");
           }
           item._termChoices = shuffleArray([
-            { sctid: item.sctid, term: item.term },
-            ...uniqueOthers
+            {sctid: item.sctid, term: item.term},
+            ...prepared.distractors.map(choice => ({...choice}))
           ]);
         } else if (gameState.mode === "lexical") {
           const otherExps = LEXICAL_CASES
@@ -2481,6 +2456,7 @@
           <button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="sctid" data-answer-value="${escapeHtml(choice.sctid)}">
             <div><strong>SCTID ${escapeHtml(choice.sctid)}</strong></div>
             <div style="font-size:0.74rem; opacity:0.9;">${escapeHtml(choice.term)}</div>
+            ${isConfirmed && choice.reason ? `<div class="dim-help">${escapeHtml(choice.reason)}</div>` : ""}
           </button>
         `;
       }).join("");
@@ -2524,7 +2500,7 @@
               <span class="dim-title">6. Concepto de referencia del ejercicio (edición declarada: Argentina 20260520)</span>
               ${isConfirmed ? `<span class="badge-chip ${chosenSctid === item.sctid ? '' : 'danger'}">${chosenSctid === item.sctid ? '✓ +1 PT (SCTID Exacto)' : '✗ Correcto: ' + item.sctid}</span>` : ''}
             </div>
-            <div class="dim-help">Seleccioná el concepto precoordinado y SCTID que representa con mayor fidelidad el significado nuclear del span resaltado:</div>
+            <div class="dim-help">Seleccioná el concepto que corresponde al literal resaltado, sin añadir información que el escenario no documenta:</div>
             <div class="snomed-options-grid">${termBtns}</div>
           </div>
         </div>
@@ -2980,16 +2956,6 @@
         });
       }
 
-      if (filter === "all" || filter === "reference") {
-        IMPORTED_RECORDS.forEach(r => rows.push({
-          layer: "Referencia importada (sin puntaje)",
-          surface: r.surface ?? r.surfaceNormalized ?? r.textoLiteral ?? r.literal,
-          cat: r.categoryCanonical ?? r.cat ?? r.category ?? r.formType ?? "No informado",
-          ref: r.sctid ? `${r.sctid} | ${r.term ?? "Término no informado"}` : (r.expansion ?? "Sentido no documentado"),
-          attrs: `Pol:${r.polarity ?? r.pol ?? "No informado"} · Cert:${r.certainty ?? r.cert ?? "No informado"} · Temp:${r.temporality ?? r.temp ?? "No informado"} · Suj:${r.subject ?? r.suj ?? "No informado"}`,
-          meta: [r.occurrenceId ?? r.termId ?? "Sin ID público", r.mappingStatus, r.mappingUsage, r.lexicalValidationStatus, r.mappingAction, r.expansion ? "Expansión: " + r.expansion : "", r.function ? "Función: " + r.function : "", r.section ? "Sección: " + r.section : "", r.note ?? r.reviewNote].filter(Boolean).join(" · ")
-        }));
-      }
       if (q) {
         rows = rows.filter(r =>
           r.surface.toLowerCase().includes(q) ||
@@ -3009,105 +2975,6 @@
           <td>${escapeHtml(r.meta)}</td>
         </tr>
       `).join("");
-    }
-
-    function parseImport(raw, filename) {
-      const text = raw.replace(/^\uFEFF/, "").trim();
-      if (!text) throw new Error("Archivo vacío");
-      let records;
-      if (/\.jsonl$/i.test(filename)) {
-        records = text.split(/\r?\n/).filter(line => line.trim()).map((line, index) => {
-          try { return JSON.parse(line); } catch { throw new Error(`JSONL inválido en línea ${index + 1}`); }
-        });
-      } else {
-        let parsed;
-        try { parsed = JSON.parse(text); } catch { throw new Error("JSON inválido; use extensión .jsonl para registros por línea"); }
-        if (Array.isArray(parsed)) records = parsed;
-        else if (parsed && Array.isArray(parsed.decisions)) records = parsed.decisions;
-        else if (parsed && Array.isArray(parsed.cases)) {
-          records = parsed.cases.flatMap(c => {
-            if (!c || typeof c !== "object") throw new Error("Caso inválido");
-            const concepts = c.concepts ?? [];
-            const lexical = c.lexicalMentions ?? [];
-            if (!Array.isArray(concepts) || !Array.isArray(lexical)) throw new Error("Conceptos o menciones inválidos");
-            // Source notes, case identifiers and annotator metadata are never copied to the reference view/export.
-            return [...concepts, ...lexical];
-          });
-        } else if (parsed && parsed.schemaVersion === "semantiar-juegos-reference.v1" && Array.isArray(parsed.records)) records = parsed.records;
-        else if (parsed && parsed.schemaVersion === "semantiar-juegos-retro.v2") {
-          throw new Error("El banco antiguo no es un archivo de referencia v1; use los JSONL originales del corpus");
-        } else throw new Error("Formato no reconocido: se esperan registros, cases o decisions");
-      }
-      if (!records.length) throw new Error("No hay registros con anotaciones; el JSON de entrada sin conceptos no es un banco de respuestas");
-      if (records.length > MAX_IMPORT_ROWS) throw new Error("Máximo: 10.000 registros por archivo");
-      const fields = ["occurrenceId", "termId", "surface", "surfaceNormalized", "textoLiteral", "literal", "sctid", "term",
-        "category", "categoryCanonical", "cat", "polarity", "certainty", "temporality", "subject", "pol", "cert", "temp", "suj",
-        "formType", "function", "section", "expansion", "correctedForm", "mappingStatus", "mappingValidationStatus",
-        "independentAuditStatus", "lexicalValidationStatus", "mappingUsage", "mappingAction", "note", "reviewNote", "senseId"];
-      return records.map((row, index) => {
-        if (!row || typeof row !== "object" || Array.isArray(row)) throw new Error(`Registro ${index + 1}: se espera un objeto`);
-        const surface = row.surface ?? row.surfaceNormalized ?? row.textoLiteral ?? row.literal;
-        if (typeof surface !== "string" || !surface.trim()) throw new Error(`Registro ${index + 1}: falta la forma literal`);
-        const result = {};
-        for (const key of fields) {
-          if (row[key] === undefined) continue;
-          if (row[key] !== null && typeof row[key] !== "string") throw new Error(`Registro ${index + 1}: ${key} debe ser texto o null`);
-          if (typeof row[key] === "string" && row[key].length > 10000) throw new Error(`Registro ${index + 1}: campo demasiado largo`);
-          result[key] = row[key];
-        }
-        if (row.originalCandidate) {
-          const candidate = row.originalCandidate;
-          if (typeof candidate.sctid !== "string" || typeof candidate.term !== "string" || !Number.isFinite(candidate.score)) throw new Error(`Registro ${index + 1}: candidato inválido`);
-          result.sctid = candidate.sctid; result.term = candidate.term; result.inferenceScore = candidate.score;
-        } else if (row.inferenceScore != null) {
-          if (!Number.isFinite(row.inferenceScore)) throw new Error(`Registro ${index + 1}: score inválido`);
-          result.inferenceScore = row.inferenceScore;
-        }
-        if (row.lexicalChanges) {
-          for (const key of ["expansion", "senseId", "function", "lexicalValidationStatus"]) {
-            if (row.lexicalChanges[key] !== undefined) {
-              const value = row.lexicalChanges[key];
-              if (value !== null && typeof value !== "string") throw new Error(`Registro ${index + 1}: cambio léxico inválido`);
-              result[key] = value;
-            }
-          }
-        }
-        return result;
-      });
-    }
-
-    function commitImport(records) {
-      const keys = new Set(IMPORTED_RECORDS.map(r => JSON.stringify(r)));
-      const added = records.filter(row => { const key = JSON.stringify(row); if (keys.has(key)) return false; keys.add(key); return true; });
-      if (IMPORTED_RECORDS.length + added.length > MAX_IMPORT_ROWS) throw new Error("Máximo total: 10.000 registros de referencia");
-      IMPORTED_RECORDS.push(...added);
-      return added.length;
-    }
-
-    function handleFileUpload(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const statusEl = document.getElementById("uploadStatusMsg");
-      if (file.size > MAX_IMPORT_BYTES) { statusEl.textContent = "Archivo demasiado grande (máximo 10 MiB)."; return; }
-      const reader = new FileReader();
-      reader.onerror = () => { statusEl.textContent = "No se pudo leer el archivo. No se incorporaron registros."; };
-      reader.onload = e => {
-        try {
-          const records = parseImport(String(e.target.result || ""), file.name);
-          const added = commitImport(records);
-          statusEl.textContent = `✓ ${added} registros de referencia añadidos; ${records.length - added} duplicados omitidos. Consulte F3. No se agregan respuestas al juego.`;
-          renderCodexTable();
-        } catch (error) { statusEl.textContent = `✗ ${error.message}. No se incorporó ningún registro de este archivo.`; }
-      };
-      reader.readAsText(file, "utf-8");
-    }
-
-    function exportCurrentDataset() {
-      const payload = {schemaVersion: "semantiar-juegos-reference.v1", records: IMPORTED_RECORDS};
-      const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"}));
-      const anchor = document.createElement("a"); anchor.href = url;
-      anchor.download = "semantiar_referencias.json"; anchor.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     function generatePR2IssueMarkdown() {
