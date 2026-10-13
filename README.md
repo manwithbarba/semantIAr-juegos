@@ -45,7 +45,7 @@ El enlace **Informar un error** abre el formulario de issues del repositorio en 
 - [Licencia de datos propios](https://github.com/manwithbarba/semantiar-terminology-corpus/blob/main/LICENSE-DATA.txt)
 - [Condiciones SNOMED CT](https://github.com/manwithbarba/semantiar-terminology-corpus/blob/main/NOTICE-SNOMED.md)
 
-Las condiciones de los datos públicos y de SNOMED CT se conservan. Esta revisión no establece una nueva licencia para el código del prototipo. Las opciones semánticas se consultaron expresamente en la edición Argentina 20260520; esta comprobación no sustituye las condiciones de licencia de SNOMED CT.
+Las condiciones de los datos públicos y de SNOMED CT se conservan. Los materiales propios del juego (código, documentación y contenidos educativos propios) se distribuyen bajo CC BY-SA 4.0; consultar LICENSE.txt. Los componentes SNOMED CT y de terceros conservan sus condiciones de origen. Las opciones semánticas se consultaron expresamente en la edición Argentina 20260520; esta comprobación no sustituye las condiciones de licencia de SNOMED CT.
 
 ## Publicación
 
@@ -59,3 +59,5 @@ Rondas completas con puntuación exacta en los tres modos; 24 conjuntos de cuatr
 ## Documentación separada
 
 El enlace Documentación abre `documentation.html`, con campos técnicos, edición, fuentes y evidencia. Las consignas y opciones del juego usan etiquetas en español sin nombres de archivos ni claves del modelo.
+
+La documentación incluye una introducción a SemantIAr, formas breves, conceptos SNOMED CT, jerarquías y categorías de trabajo, contexto clínico y condiciones de licencia.
