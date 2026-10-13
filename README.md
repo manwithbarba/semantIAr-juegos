@@ -4,7 +4,7 @@ Versión corregida el 13/10/2026 a partir del prototipo aportado. Funciona como 
 
 ## Abrir
 
-Abrir `index.html` en un navegador moderno. También puede servirse mediante cualquier servidor estático. No requiere instalación ni cuenta. Si el navegador impide el almacenamiento local, la partida sigue funcionando sin guardar estadísticas. La copia al portapapeles depende de los permisos del navegador; el texto de revisión puede seleccionarse y copiarse manualmente.
+Abrir `index.html` en un navegador moderno. También puede servirse mediante cualquier servidor estático. No requiere instalación ni cuenta. Si el navegador impide el almacenamiento local, la partida sigue funcionando sin guardar estadísticas.
 
 ## Banco y alcance
 
@@ -28,13 +28,13 @@ En el escenario ARM se explicita el tubo endotraqueal para distinguir ventilaci�
 
 ## Controles y accesibilidad
 
-Clic o Tab/Espacio para seleccionar opciones; Enter confirma o avanza; H muestra una pista; M alterna sonido; C alterna el efecto CRT; F1–F4 cambian de vista. Los atajos no interceptan escritura en campos de entrada. Algunos navegadores reservan teclas de función: los botones visibles ofrecen las mismas acciones.
+Clic o Tab/Espacio para seleccionar opciones; Enter confirma o avanza; H muestra una pista; M alterna sonido; C alterna el efecto CRT; F1–F3 cambian de vista. Los atajos no interceptan escritura en campos de entrada. Algunos navegadores reservan teclas de función: los botones visibles ofrecen las mismas acciones.
 
 Hay cuatro paletas, foco visible y respeto de `prefers-reduced-motion`. El reloj se pausa al cambiar de vista; una respuesta confirmada no se vuelve a puntuar. Se recomienda desactivar el efecto CRT o usar alto contraste según preferencia.
 
-## Propuestas de revisión
+## Informar un error
 
-F4 genera texto Markdown para una propuesta. Completar archivo origen, `occurrenceId` o `termId`, cambio, evidencia verificable, edición consultada e incertidumbres. Los campos pendientes se marcan expresamente. Generar o copiar el texto no abre un issue, no lo publica ni acepta la propuesta.
+El enlace **Informar un error** abre el formulario de issues del repositorio en GitHub. Puede requerir iniciar sesión. La página no envía información automáticamente; describir el ejercicio y el problema sin incluir notas clínicas de trabajo ni datos personales.
 
 ## Fuentes públicas y licencia
 

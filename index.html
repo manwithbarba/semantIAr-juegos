@@ -782,7 +782,7 @@
           <button class="tab-btn active" id="tabMenu" onclick="switchView('menu')">🏠 [F1] Sala Arcade (Inicio)</button>
           <button class="tab-btn" id="tabPlay" onclick="switchView('play')">🎯 [F2] Partida en Curso</button>
           <button class="tab-btn" id="tabCodex" onclick="switchView('codex')">📚 [F3] Codex 29/09/2026 (Corpus v2)</button>
-          <button class="tab-btn" id="tabLoader" onclick="switchView('loader')">📝 [F4] Proponer revisión</button>
+          <a class="tab-btn" href="https://github.com/manwithbarba/semantIAr-juegos/issues/new" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Informar un error ↗</a>
         </nav>
 
         <!-- EDUCATIONAL DISCLAIMER -->
@@ -943,38 +943,7 @@
         </section>
 
         <!-- VIEW 4: REVIEW PROPOSAL -->
-        <section id="viewLoader" class="hidden">
-          <div class="dimensions-grid" style="grid-template-columns:1fr">
-            <div class="retro-panel" style="margin-bottom:0;">
-              <div class="retro-panel-header">
-                <div class="retro-title">📝 GENERADOR DE REVISIÓN TERMINOLÓGICA (29/09/2026)</div>
-                <span class="badge-chip amber">.github/ISSUE_TEMPLATE/revision_terminologica.md</span>
-              </div>
-              <p style="font-size: 0.78rem; color: var(--phos-dim); margin-bottom: 10px;">
-                Prepará una propuesta de revisión para el recurso público. Incluí ID, evidencia y versión consultada. No agregues notas clínicas ni datos identificatorios; generar el texto no lo publica ni acepta una adjudicación.
-              </p>
-              <div style="display:grid; gap:8px; margin-bottom:10px;">
-                <input type="text" id="revRecordId" class="search-input" aria-label="ID público del registro" placeholder="occurrenceId o termId del registro" maxlength="200" />
-<input type="text" id="revSource" class="search-input" aria-label="Archivo de origen" placeholder="Archivo de origen (ej: faiss_candidate_occurrences.jsonl)" />
-<textarea id="revEvidence" maxlength="5000" class="search-input" aria-label="Evidencia y límites" placeholder="Fuente verificable, justificación, versión consultada e incertidumbres"></textarea>
-<input type="text" id="revSurface" class="search-input" placeholder="Superficie / Forma breve (ej: PPL, 3L, a/a)" value="PPL" />
-                <input type="text" id="revCurrentSctid" class="search-input" placeholder="SCTID / Candidato observado (ej: 148731000 | Lumbar puncture)" value="148731000 | Lumbar puncture (score 0.6925)" />
-                <select id="revAction" class="select-input">
-                  <option value="reject_candidate">reject_candidate — Rechazar candidato FAISS por discordancia</option>
-                  <option value="retain_candidate_pending_ontology_validation">retain_candidate_pending_ontology_validation — Retener pendiente de validación</option>
-                  <option value="withhold_mapping">withhold_mapping — Abstener mapeo (símbolo/ambiguo)</option>
-                  <option value="propose_lexical_expansion">propose_lexical_expansion — Proponer expansión en capa léxica</option>
-                </select>
-                <input type="text" id="revProposal" class="search-input" placeholder="Expansión o concepto propuesto (ej: puñopercusión lumbar)" value="puñopercusión lumbar (maniobra semiológica, no punción lumbar)" />
-              </div>
-              <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn-arcade" onclick="generatePR2IssueMarkdown()">⚡ Generar Plantilla Markdown</button>
-                <button class="hw-btn" onclick="copyPR2IssueMarkdown()">📋 Copiar Markdown</button>
-              </div>
-              <pre id="revMarkdownOutput" class="note-terminal" style="margin-top:10px; font-size:0.72rem; white-space:pre-wrap; max-height:170px; overflow-y:auto;"></pre>
-            </div>
-          </div>
-        </section>
+
       </main>
     </div>
 
@@ -984,7 +953,7 @@
         <button class="dpad-btn" title="Anterior / Subir" onclick="arcadeStep(-1)">◀</button>
         <button class="dpad-btn" title="Pista Clínica [H]" onclick="triggerHint()">?</button>
         <button class="dpad-btn" title="Siguiente / Avanzar" onclick="arcadeStep(1)">▶</button>
-        <span class="deck-legend"><strong>CONTROLES:</strong> <code>TAB</code> recorre opciones · <code>ESPACIO</code> selecciona · <code>ENTER</code> confirma/avanza · <code>H</code> pista · <code>F1-F4</code> vistas</span>
+        <span class="deck-legend"><strong>CONTROLES:</strong> <code>TAB</code> recorre opciones · <code>ESPACIO</code> selecciona · <code>ENTER</code> confirma/avanza · <code>H</code> pista · <code>F1-F3</code> vistas</span>
       </div>
       <div class="ab-cluster">
         <div style="text-align:right; font-size:0.72rem; color:var(--phos-dim);">
@@ -2186,16 +2155,13 @@
       clearInterval(gameState.timerInterval);
       gameState.view = view;
       if (view === "play" && gameState.roundItems[gameState.currentIndex] && !gameState.confirmed) startQuestionTimer();
-      ["Menu", "Play", "Codex", "Loader"].forEach(v => {
+      ["Menu", "Play", "Codex"].forEach(v => {
         const sec = document.getElementById("view" + v);
         const tab = document.getElementById("tab" + v);
         if (sec) sec.classList.toggle("hidden", v.toLowerCase() !== view);
         if (tab) tab.classList.toggle("active", v.toLowerCase() !== view ? false : true);
       });
       if (view === "codex") renderCodexTable();
-      if (view === "loader" && !document.getElementById("revMarkdownOutput").textContent) {
-        generatePR2IssueMarkdown();
-      }
     }
 
     function selectGameMode(mode) {
@@ -2977,50 +2943,6 @@
       `).join("");
     }
 
-    function generatePR2IssueMarkdown() {
-      sfxClick();
-      const surf = document.getElementById("revSurface").value || "PPL";
-      const curr = document.getElementById("revCurrentSctid").value || "148731000 | Lumbar puncture";
-      const act = document.getElementById("revAction").value;
-      const prop = document.getElementById("revProposal").value || "puñopercusión lumbar";
-
-      const recordId = document.getElementById("revRecordId").value.trim();
-      const sourceFile = document.getElementById("revSource").value.trim();
-      const evidence = document.getElementById("revEvidence").value.trim();
-      const md = [
-        "---",
-        "name: Revisión terminológica (SemantIAr Corpus v2 - 29/09/2026)",
-        "about: Reportar ajuste léxico o decisión sobre candidato SNOMED CT",
-        "---",
-        "",
-        "### 1. Identificación del Registro",
-        `- Archivo origen: ${sourceFile || "PENDIENTE"}`,
-        `- occurrenceId o termId: ${recordId || "PENDIENTE"}`,
-        `- **Superficie (` + "`surface`" + `):** \`${surf}\``,
-        `- **Candidato / Mapeo observado:** \`${curr}\``,
-        `- **Edición SNOMED CT de referencia:** \`http://snomed.info/sct/11000221109/version/20260520\``,
-        "",
-        "### 2. Acción Propuesta (`mappingAction`)",
-        `- **Decisión sugerida:** \`${act}\``,
-        `- **Expansión / Concepto propuesto:** ${prop}`,
-        "",
-        "### 3. Justificación Clínica y Metodológica",
-        evidence || "PENDIENTE: completar evidencia y límites antes de enviar",
-        "Propuesta pendiente de revisión humana; no incorpora cambios al corpus. No incluir notas clínicas ni datos identificatorios.",
-        "- Se preserva la trazabilidad del candidato original en `review_only` sin promover automáticamente candidatos FAISS a gold sin validación ontológica independiente."
-      ].join("\n");
-
-      document.getElementById("revMarkdownOutput").textContent = md;
-    }
-
-    function copyPR2IssueMarkdown() {
-      sfxClick();
-      const text = document.getElementById("revMarkdownOutput").textContent;
-      if (navigator.clipboard && text) {
-        navigator.clipboard.writeText(text).then(() => { document.getElementById("revMarkdownOutput").setAttribute("aria-label", "Texto copiado"); }).catch(() => { document.getElementById("revMarkdownOutput").setAttribute("aria-label", "No se pudo copiar; seleccione y copie el texto manualmente"); });
-      }
-    }
-
     // =========================================================================
     // 9. ATAJOS DE TECLADO ARCADE
     // =========================================================================
@@ -3051,9 +2973,7 @@
       } else if (e.key === "F3") {
         e.preventDefault();
         switchView("codex");
-      } else if (e.key === "F4") {
-        e.preventDefault();
-        switchView("loader");
+
       }
     });
 
@@ -3062,7 +2982,6 @@
       renderStatsPanel();
       updateFilteredPoolCount();
       renderCodexTable();
-      generatePR2IssueMarkdown();
     });
   </script>
 </body>
