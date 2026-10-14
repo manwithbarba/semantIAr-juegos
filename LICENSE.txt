@@ -16,3 +16,4 @@ https://github.com/manwithbarba/semantiar-terminology-corpus/blob/main/NOTICE-SN
 
 Los datos propios derivados del corpus mantienen la licencia y las condiciones documentadas en su repositorio:
 https://github.com/manwithbarba/semantiar-terminology-corpus/blob/main/LICENSE-DATA.txt
+
