@@ -1,0 +1,1312 @@
+{
+  "status": "verified_fhir_and_curated",
+  "server": "https://implementation-demo.snomedtools.org/fhir",
+  "version": "http://snomed.info/sct/11000221109/version/20260520",
+  "exercises": [
+    {
+      "id": "demo-001",
+      "literal": "SPO2 95%",
+      "originalReferenceCode": "448225001",
+      "reference": {
+        "code": "448225001",
+        "display": "saturación de oxígeno normal",
+        "fsn": [
+          "saturación de oxígeno dentro del rango de referencia (hallazgo)",
+          "Oxygen saturation within reference range (finding)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_448225001.json"
+      },
+      "distractors": [
+        {
+          "code": "449171008",
+          "display": "saturación de oxígeno por debajo del rango de referencia",
+          "fsn": [
+            "saturación de oxígeno por debajo del rango de referencia (hallazgo)",
+            "Oxygen saturation below reference range (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_449171008.json",
+          "whyNotCorrect": "95% se describe dentro de rango, no por debajo."
+        },
+        {
+          "code": "1351951002",
+          "display": "saturación de oxígeno por encima del rango de referencia",
+          "fsn": [
+            "Oxygen saturation above reference range (finding)",
+            "saturación de oxígeno por encima del rango de referencia (hallazgo)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_1351951002.json",
+          "whyNotCorrect": "No documenta saturación aumentada."
+        },
+        {
+          "code": "389087006",
+          "display": "hipoxemia",
+          "fsn": [
+            "Hypoxemia (disorder)",
+            "hipoxemia (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_389087006.json",
+          "whyNotCorrect": "No documenta oxigenación sanguínea anormalmente baja."
+        }
+      ]
+    },
+    {
+      "id": "demo-002",
+      "literal": "en ARM",
+      "originalReferenceCode": "1258985005",
+      "reference": {
+        "code": "1258985005",
+        "display": "ventilación mecánica invasiva",
+        "fsn": [
+          "Invasive mechanical ventilation (regime/therapy)",
+          "ventilación mecánica invasiva (régimen/tratamiento)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_1258985005.json"
+      },
+      "distractors": [
+        {
+          "code": "428311008",
+          "display": "VNI - ventilación no invasiva",
+          "fsn": [
+            "ventilación no invasiva (régimen/tratamiento)",
+            "Non-invasive ventilation (regime/therapy)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_428311008.json",
+          "whyNotCorrect": "El escenario adaptado documenta intubación y ventilación invasiva; la ventilación no invasiva utiliza una interfaz externa."
+        },
+        {
+          "code": "1259025002",
+          "display": "terapia con oxígeno nasal de alto flujo",
+          "fsn": [
+            "terapia con flujo elevado de oxígeno calentado y humidificado mediante cánula nasal (procedimiento)",
+            "Heated and humidified high flow oxygen therapy using nasal cannula (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_1259025002.json",
+          "whyNotCorrect": "Aporte de oxígeno no equivale a ventilación mecánica invasiva."
+        },
+        {
+          "code": "425696007",
+          "display": "asistencia respiratoria manual con bolsa y máscara",
+          "fsn": [
+            "Manual respiratory assistance using bag and mask (procedure)",
+            "asistencia respiratoria manual con bolsa y máscara (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_425696007.json",
+          "whyNotCorrect": "La nota dice conectado a ventilador, no ventilación manual."
+        }
+      ],
+      "requiredScenarioAdaptation": "Explicitar paciente intubado y conectado por tubo endotraqueal al ventilador."
+    },
+    {
+      "id": "demo-003",
+      "literal": "BIC FNT",
+      "originalReferenceCode": null,
+      "reference": {
+        "code": "40648001",
+        "display": "producto que contiene fentanilo",
+        "fsn": [
+          "producto que contiene fentanilo (producto medicinal)",
+          "Product containing fentanyl (medicinal product)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_40648001.json"
+      },
+      "distractors": [
+        {
+          "code": "73572009",
+          "display": "producto que contiene morfina",
+          "fsn": [
+            "producto que contiene morfina (producto medicinal)",
+            "Product containing morphine (medicinal product)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_73572009.json",
+          "whyNotCorrect": "Opioide distinto de fentanilo."
+        },
+        {
+          "code": "108379008",
+          "display": "producto que contiene remifentanilo",
+          "fsn": [
+            "producto que contiene remifentanilo (producto medicinal)",
+            "Product containing remifentanil (medicinal product)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_108379008.json",
+          "whyNotCorrect": "Opioide distinto de fentanilo."
+        },
+        {
+          "code": "370275005",
+          "display": "producto con sufentanilo",
+          "fsn": [
+            "producto que contiene sufentanilo (producto medicinal)",
+            "Product containing sufentanil (medicinal product)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_370275005.json",
+          "whyNotCorrect": "Opioide distinto de fentanilo."
+        }
+      ]
+    },
+    {
+      "id": "demo-004",
+      "literal": "antecedentes familiares de diabetes mellitus tipo 2",
+      "originalReferenceCode": null,
+      "reference": {
+        "code": "430679000",
+        "display": "antecedente familiar de diabetes mellitus tipo 2",
+        "fsn": [
+          "antecedente familiar de diabetes mellitus tipo 2 (situación)",
+          "Family history of diabetes mellitus type 2 (situation)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_430679000.json"
+      },
+      "distractors": [
+        {
+          "code": "430678008",
+          "display": "antecedente familiar de diabetes mellitus tipo 1",
+          "fsn": [
+            "antecedente familiar de diabetes mellitus tipo 1 (situación)",
+            "Family history of diabetes mellitus type 1 (situation)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_430678008.json",
+          "whyNotCorrect": "El tipo familiar explícito es 2."
+        },
+        {
+          "code": "472969004",
+          "display": "antecedente de diabetes mellitus tipo 2",
+          "fsn": [
+            "antecedente de diabetes mellitus tipo 2 (situación)",
+            "History of diabetes mellitus type 2 (situation)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_472969004.json",
+          "whyNotCorrect": "Se refiere a familiares, no al paciente."
+        },
+        {
+          "code": "160402005",
+          "display": "antecedente familiar de diabetes gestacional",
+          "fsn": [
+            "antecedente familiar de diabetes en el embarazo (situación)",
+            "Family history: Diabetes in pregnancy (situation)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_160402005.json",
+          "whyNotCorrect": "No se documenta diabetes gestacional familiar."
+        }
+      ]
+    },
+    {
+      "id": "demo-005",
+      "literal": "no presentar dolor torácico",
+      "originalReferenceCode": "29857009",
+      "reference": {
+        "code": "29857009",
+        "display": "dolor de pecho",
+        "fsn": [
+          "Chest pain (finding)",
+          "dolor de pecho (hallazgo)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_29857009.json"
+      },
+      "distractors": [
+        {
+          "code": "2237002",
+          "display": "dolor pleural",
+          "fsn": [
+            "dolor pleurítico (hallazgo)",
+            "Pleuritic pain (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_2237002.json",
+          "whyNotCorrect": "El literal no atribuye relación respiratoria."
+        },
+        {
+          "code": "102588006",
+          "display": "dolor de la pared torácica",
+          "fsn": [
+            "dolor de la pared torácica (hallazgo)",
+            "Chest wall pain (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_102588006.json",
+          "whyNotCorrect": "No identifica origen en pared torácica."
+        },
+        {
+          "code": "71884009",
+          "display": "dolor precordial",
+          "fsn": [
+            "Precordial pain (finding)",
+            "dolor precordial (hallazgo)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_71884009.json",
+          "whyNotCorrect": "No delimita la región precordial."
+        }
+      ],
+      "editorialNote": "Seleccionar equivalencia del literal general dolor torácico; no afirmar que los subtipos son incompatibles con la negación."
+    },
+    {
+      "id": "demo-006",
+      "literal": "sospecha de infección del tracto urinario",
+      "originalReferenceCode": "68566005",
+      "reference": {
+        "code": "68566005",
+        "display": "enfermedad infecciosa de las vías urinarias",
+        "fsn": [
+          "infección urinaria (trastorno)",
+          "Urinary tract infectious disease (disorder)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_68566005.json"
+      },
+      "distractors": [
+        {
+          "code": "36689008",
+          "display": "pielonefritis aguda",
+          "fsn": [
+            "pielonefritis aguda (trastorno)",
+            "Acute pyelonephritis (disorder)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_36689008.json",
+          "whyNotCorrect": "No documenta afectación renal."
+        },
+        {
+          "code": "31822004",
+          "display": "inflamación de la uretra",
+          "fsn": [
+            "Urethritis (disorder)",
+            "uretritis (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_31822004.json",
+          "whyNotCorrect": "No identifica inflamación uretral."
+        },
+        {
+          "code": "720406004",
+          "display": "bacteriuria asintomática",
+          "fsn": [
+            "bacteriuria asintomática (hallazgo)",
+            "Asymptomatic bacteriuria (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_720406004.json",
+          "whyNotCorrect": "No documenta resultado de cultivo ni ausencia de síntomas."
+        }
+      ]
+    },
+    {
+      "id": "corpus-007",
+      "literal": "afebril",
+      "originalReferenceCode": "386661006",
+      "reference": {
+        "code": "386661006",
+        "display": "fiebre",
+        "fsn": [
+          "Fever (finding)",
+          "fiebre (hallazgo)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_386661006.json"
+      },
+      "distractors": [
+        {
+          "code": "386689009",
+          "display": "hipotermia",
+          "fsn": [
+            "Hypothermia (finding)",
+            "hipotermia (hallazgo)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_386689009.json",
+          "whyNotCorrect": "Afebril no implica temperatura baja."
+        },
+        {
+          "code": "43724002",
+          "display": "escalofríos",
+          "fsn": [
+            "escalofríos (hallazgo)",
+            "Chill (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_43724002.json",
+          "whyNotCorrect": "No es el concepto negado por afebril."
+        },
+        {
+          "code": "42984000",
+          "display": "sudor nocturno",
+          "fsn": [
+            "Night sweats (finding)",
+            "sudoración nocturna (hallazgo)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_42984000.json",
+          "whyNotCorrect": "No es el concepto negado por afebril."
+        }
+      ]
+    },
+    {
+      "id": "corpus-008",
+      "literal": "abdomen blando depresible indoloro.",
+      "originalReferenceCode": "43478001",
+      "reference": {
+        "code": "43478001",
+        "display": "dolor abdominal a la palpación",
+        "fsn": [
+          "dolor abdominal a la palpación (hallazgo)",
+          "Abdominal tenderness (finding)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_43478001.json"
+      },
+      "distractors": [
+        {
+          "code": "35611005",
+          "display": "dolor a la descompresión",
+          "fsn": [
+            "dolor a la descompresión (hallazgo)",
+            "Rebound tenderness (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_35611005.json",
+          "whyNotCorrect": "No documenta maniobra de descompresión."
+        },
+        {
+          "code": "249545003",
+          "display": "defensa abdominal",
+          "fsn": [
+            "defensa abdominal (hallazgo)",
+            "Abdominal guarding (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_249545003.json",
+          "whyNotCorrect": "No es el dolor a la palpación negado."
+        },
+        {
+          "code": "72300008",
+          "display": "rigidez abdominal",
+          "fsn": [
+            "rigidez abdominal (hallazgo)",
+            "Abdominal rigidity (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_72300008.json",
+          "whyNotCorrect": "No es el dolor a la palpación negado."
+        }
+      ]
+    },
+    {
+      "id": "corpus-009",
+      "literal": "(O2 3 LT)",
+      "originalReferenceCode": "57485005",
+      "reference": {
+        "code": "57485005",
+        "display": "terapia por oxígeno",
+        "fsn": [
+          "Oxygen therapy (procedure)",
+          "oxigenoterapia (procedimiento)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_57485005.json"
+      },
+      "distractors": [
+        {
+          "code": "1259025002",
+          "display": "terapia con oxígeno nasal de alto flujo",
+          "fsn": [
+            "terapia con flujo elevado de oxígeno calentado y humidificado mediante cánula nasal (procedimiento)",
+            "Heated and humidified high flow oxygen therapy using nasal cannula (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_1259025002.json",
+          "whyNotCorrect": "3 litros por cánula convencional no documentan alto flujo."
+        },
+        {
+          "code": "1258985005",
+          "display": "ventilación mecánica invasiva",
+          "fsn": [
+            "Invasive mechanical ventilation (regime/therapy)",
+            "ventilación mecánica invasiva (régimen/tratamiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_1258985005.json",
+          "whyNotCorrect": "No documenta intubación ni ventilador."
+        },
+        {
+          "code": "18678000",
+          "display": "oxigenación hiperbárica",
+          "fsn": [
+            "terapia con oxígeno hiperbárico (procedimiento)",
+            "Hyperbaric oxygen therapy (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_18678000.json",
+          "whyNotCorrect": "No documenta cámara hiperbárica."
+        }
+      ]
+    },
+    {
+      "id": "corpus-010",
+      "literal": "angor",
+      "originalReferenceCode": "194828000",
+      "reference": {
+        "code": "194828000",
+        "display": "síndrome anginoso",
+        "fsn": [
+          "Angina (disorder)",
+          "angina de pecho (trastorno)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_194828000.json"
+      },
+      "distractors": [
+        {
+          "code": "57054005",
+          "display": "IAM",
+          "fsn": [
+            "Acute myocardial infarction (disorder)",
+            "infarto agudo de miocardio (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_57054005.json",
+          "whyNotCorrect": "Angor no equivale a necrosis miocárdica."
+        },
+        {
+          "code": "3238004",
+          "display": "pericarditis",
+          "fsn": [
+            "Pericarditis (disorder)",
+            "pericarditis (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_3238004.json",
+          "whyNotCorrect": "Angor no designa inflamación pericárdica."
+        },
+        {
+          "code": "281245003",
+          "display": "dolor de pecho musculoesquelético",
+          "fsn": [
+            "Musculoskeletal chest pain (finding)",
+            "dolor torácico musculoesquelético (hallazgo)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_281245003.json",
+          "whyNotCorrect": "Angor no designa dolor musculoesquelético."
+        }
+      ]
+    },
+    {
+      "id": "corpus-011",
+      "literal": "hernia epigastrica",
+      "originalReferenceCode": "289260002",
+      "reference": {
+        "code": "289260002",
+        "display": "hernia epigástrica",
+        "fsn": [
+          "Epigastric hernia (disorder)",
+          "hernia epigástrica (trastorno)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_289260002.json"
+      },
+      "distractors": [
+        {
+          "code": "396347007",
+          "display": "hernia umbilical",
+          "fsn": [
+            "Umbilical hernia (disorder)",
+            "hernia umbilical (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_396347007.json",
+          "whyNotCorrect": "Ubicación distinta del epigastrio."
+        },
+        {
+          "code": "396232000",
+          "display": "hernia inguinal",
+          "fsn": [
+            "hernia inguinal (trastorno)",
+            "Inguinal hernia (disorder)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_396232000.json",
+          "whyNotCorrect": "Ubicación distinta del epigastrio."
+        },
+        {
+          "code": "236037000",
+          "display": "hernia por incisión",
+          "fsn": [
+            "Incisional hernia (disorder)",
+            "eventración (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_236037000.json",
+          "whyNotCorrect": "No documenta defecto sobre incisión quirúrgica."
+        }
+      ]
+    },
+    {
+      "id": "corpus-012",
+      "literal": "puericultura",
+      "originalReferenceCode": "408991007",
+      "reference": {
+        "code": "408991007",
+        "display": "enseñanza de puericultura",
+        "fsn": [
+          "Child care education (procedure)",
+          "educación en cuidados del niño (procedimiento)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_408991007.json"
+      },
+      "distractors": [
+        {
+          "code": "171044003",
+          "display": "educación sobre inmunización",
+          "fsn": [
+            "Education about immunization (procedure)",
+            "educación sobre inmunización (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_171044003.json",
+          "whyNotCorrect": "Puericultura no identifica asesoramiento específico de vacunación."
+        },
+        {
+          "code": "967006",
+          "display": "educación sobre medicación",
+          "fsn": [
+            "Medication education (procedure)",
+            "educación sobre medicación (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_967006.json",
+          "whyNotCorrect": "No documenta educación farmacológica."
+        },
+        {
+          "code": "58707002",
+          "display": "instrucción sobre la higiene bucal",
+          "fsn": [
+            "Oral hygiene education (procedure)",
+            "educación sobre la higiene bucal (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_58707002.json",
+          "whyNotCorrect": "No documenta educación odontológica."
+        }
+      ]
+    },
+    {
+      "id": "corpus-013",
+      "literal": "amoxicilina",
+      "originalReferenceCode": "27658006",
+      "reference": {
+        "code": "27658006",
+        "display": "producto que contiene amoxicilina",
+        "fsn": [
+          "producto que contiene amoxicilina (producto medicinal)",
+          "Product containing amoxicillin (medicinal product)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_27658006.json"
+      },
+      "distractors": [
+        {
+          "code": "31087008",
+          "display": "producto que contiene ampicilina",
+          "fsn": [
+            "producto que contiene ampicilina (producto medicinal)",
+            "Product containing ampicillin (medicinal product)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_31087008.json",
+          "whyNotCorrect": "Aminopenicilina distinta."
+        },
+        {
+          "code": "734844004",
+          "display": "producto con amoxicilina y ácido clavulánico",
+          "fsn": [
+            "producto que contiene amoxicilina y ácido clavulánico (producto medicinal)",
+            "Product containing amoxicillin and clavulanic acid (medicinal product)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_734844004.json",
+          "whyNotCorrect": "No documenta asociación con clavulanato."
+        },
+        {
+          "code": "54887004",
+          "display": "producto que contiene cefalexina",
+          "fsn": [
+            "Product containing cefalexin (medicinal product)",
+            "producto que contiene cefalexina (producto medicinal)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_54887004.json",
+          "whyNotCorrect": "Antibiótico distinto."
+        }
+      ]
+    },
+    {
+      "id": "corpus-014",
+      "literal": "PAUTAS DE ALARMA",
+      "originalReferenceCode": "223413005",
+      "reference": {
+        "code": "223413005",
+        "display": "asesoramiento acerca de signos y síntomas",
+        "fsn": [
+          "educación sobre signos y síntomas (procedimiento)",
+          "Signs and symptoms education (procedure)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_223413005.json"
+      },
+      "distractors": [
+        {
+          "code": "967006",
+          "display": "educación sobre medicación",
+          "fsn": [
+            "Medication education (procedure)",
+            "educación sobre medicación (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_967006.json",
+          "whyNotCorrect": "El literal identifica signos de alarma, no medicación."
+        },
+        {
+          "code": "63994009",
+          "display": "educación sobre profilaxis de las infecciones",
+          "fsn": [
+            "Infection prevention education (procedure)",
+            "educación sobre profilaxis de las infecciones (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_63994009.json",
+          "whyNotCorrect": "No identifica prevención de infección."
+        },
+        {
+          "code": "61310001",
+          "display": "educación para la salud - nutrición",
+          "fsn": [
+            "educación sobre alimentación (procedimiento)",
+            "Nutrition education (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_61310001.json",
+          "whyNotCorrect": "No identifica recomendaciones nutricionales."
+        }
+      ]
+    },
+    {
+      "id": "corpus-015",
+      "literal": "acv",
+      "originalReferenceCode": "230690007",
+      "reference": {
+        "code": "230690007",
+        "display": "ACV",
+        "fsn": [
+          "accidente cerebrovascular (trastorno)",
+          "Cerebrovascular accident (disorder)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_230690007.json"
+      },
+      "distractors": [
+        {
+          "code": "266257000",
+          "display": "ataque isquémico transitorio",
+          "fsn": [
+            "Transient ischemic attack (disorder)",
+            "ataque isquémico transitorio (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_266257000.json",
+          "whyNotCorrect": "No equivale al ACV documentado."
+        },
+        {
+          "code": "274100004",
+          "display": "hemorragia intracerebral",
+          "fsn": [
+            "hemorragia cerebral (trastorno)",
+            "Cerebral hemorrhage (disorder)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_274100004.json",
+          "whyNotCorrect": "La nota especifica ACV isquémico."
+        },
+        {
+          "code": "21454007",
+          "display": "hemorragia subaracnoidea intracraneal",
+          "fsn": [
+            "Subarachnoid intracranial hemorrhage (disorder)",
+            "hemorragia subaracnoidea intracraneal (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_21454007.json",
+          "whyNotCorrect": "La nota especifica ACV isquémico."
+        }
+      ]
+    },
+    {
+      "id": "corpus-016",
+      "literal": "ecodoppler",
+      "originalReferenceCode": "1187106001",
+      "reference": {
+        "code": "1187106001",
+        "display": "ultrasonografía Doppler",
+        "fsn": [
+          "Doppler ultrasonography (procedure)",
+          "ultrasonografía Doppler (procedimiento)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_1187106001.json"
+      },
+      "distractors": [
+        {
+          "code": "4970003",
+          "display": "venografía",
+          "fsn": [
+            "Venography (procedure)",
+            "flebografía (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_4970003.json",
+          "whyNotCorrect": "Estudio venoso con contraste, no ecografía Doppler."
+        },
+        {
+          "code": "418272005",
+          "display": "angiotomografía con contraste",
+          "fsn": [
+            "Computed tomography angiography with contrast (procedure)",
+            "angiografía por tomografía computarizada con contraste (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_418272005.json",
+          "whyNotCorrect": "Modalidad distinta de ultrasonido."
+        },
+        {
+          "code": "431508007",
+          "display": "angiografía de vaso sanguíneo [como un todo] por RM",
+          "fsn": [
+            "Magnetic resonance angiography of entire blood vessel (procedure)",
+            "angiografía de vaso sanguíneo [como un todo] por resonancia magnética (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_431508007.json",
+          "whyNotCorrect": "Modalidad distinta de ultrasonido."
+        }
+      ]
+    },
+    {
+      "id": "corpus-017",
+      "literal": "TBC MENINGEA",
+      "originalReferenceCode": "90302003",
+      "reference": {
+        "code": "90302003",
+        "display": "tuberculosis de las meninges cerebrales",
+        "fsn": [
+          "Tuberculosis of cerebral meninges (disorder)",
+          "tuberculosis de las meninges cerebrales (trastorno)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_90302003.json"
+      },
+      "distractors": [
+        {
+          "code": "192644005",
+          "display": "meningitis epidémica",
+          "fsn": [
+            "Meningococcal meningitis (disorder)",
+            "meningitis meningocócica (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_192644005.json",
+          "whyNotCorrect": "Etiología meningocócica distinta de tuberculosis."
+        },
+        {
+          "code": "58170007",
+          "display": "meningitis viral",
+          "fsn": [
+            "Viral meningitis (disorder)",
+            "meningitis viral (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_58170007.json",
+          "whyNotCorrect": "Etiología distinta."
+        },
+        {
+          "code": "154283005",
+          "display": "tuberculosis pulmonar",
+          "fsn": [
+            "Pulmonary tuberculosis (disorder)",
+            "tuberculosis pulmonar (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_154283005.json",
+          "whyNotCorrect": "Localización distinta de meninges."
+        }
+      ]
+    },
+    {
+      "id": "corpus-018",
+      "literal": "azitromicina",
+      "originalReferenceCode": "96034006",
+      "reference": {
+        "code": "96034006",
+        "display": "producto que contiene azitromicina",
+        "fsn": [
+          "Product containing azithromycin (medicinal product)",
+          "producto que contiene azitromicina (producto medicinal)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_96034006.json"
+      },
+      "distractors": [
+        {
+          "code": "83999008",
+          "display": "producto que contiene claritromicina",
+          "fsn": [
+            "producto que contiene claritromicina (producto medicinal)",
+            "Product containing clarithromycin (medicinal product)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_83999008.json",
+          "whyNotCorrect": "Macrólido distinto."
+        },
+        {
+          "code": "30427009",
+          "display": "producto que contiene eritromicina",
+          "fsn": [
+            "producto que contiene eritromicina (producto medicinal)",
+            "Product containing erythromycin (medicinal product)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_30427009.json",
+          "whyNotCorrect": "Macrólido distinto."
+        },
+        {
+          "code": "713769006",
+          "display": "producto que contiene roxitromicina",
+          "fsn": [
+            "Product containing roxithromycin (medicinal product)",
+            "producto que contiene roxitromicina (producto medicinal)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_713769006.json",
+          "whyNotCorrect": "Macrólido distinto."
+        }
+      ]
+    },
+    {
+      "id": "corpus-019",
+      "literal": "EAB",
+      "originalReferenceCode": "250570001",
+      "reference": {
+        "code": "250570001",
+        "display": "evaluación del equilibrio ácido-base",
+        "fsn": [
+          "evaluación del equilibrio ácido-base (procedimiento)",
+          "Evaluation of acid-base balance (procedure)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_250570001.json"
+      },
+      "distractors": [
+        {
+          "code": "3926003",
+          "display": "medición de lactato",
+          "fsn": [
+            "Lactic acid measurement (procedure)",
+            "medición de ácido láctico (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_3926003.json",
+          "whyNotCorrect": "Lactato se informa por separado; no equivale a EAB."
+        },
+        {
+          "code": "312474003",
+          "display": "determinación de niveles de electrólitos en sangre",
+          "fsn": [
+            "medición de electrólitos en sangre (procedimiento)",
+            "Blood electrolyte measurement (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_312474003.json",
+          "whyNotCorrect": "Ionograma se informa por separado."
+        },
+        {
+          "code": "312471006",
+          "display": "determinación de nivel de bicarbonato en sangre",
+          "fsn": [
+            "Blood bicarbonate measurement (procedure)",
+            "medición de bicarbonato en sangre (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_312471006.json",
+          "whyNotCorrect": "Un componente aislado no equivale al panel EAB."
+        }
+      ]
+    },
+    {
+      "id": "corpus-020",
+      "literal": "sin reaccion peritoneal",
+      "originalReferenceCode": null,
+      "reference": {
+        "code": "35611005",
+        "display": "dolor a la descompresión",
+        "fsn": [
+          "dolor a la descompresión (hallazgo)",
+          "Rebound tenderness (finding)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_35611005.json"
+      },
+      "distractors": [
+        {
+          "code": "249545003",
+          "display": "defensa abdominal",
+          "fsn": [
+            "defensa abdominal (hallazgo)",
+            "Abdominal guarding (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_249545003.json",
+          "whyNotCorrect": "No equivale a dolor de rebote negado."
+        },
+        {
+          "code": "72300008",
+          "display": "rigidez abdominal",
+          "fsn": [
+            "rigidez abdominal (hallazgo)",
+            "Abdominal rigidity (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_72300008.json",
+          "whyNotCorrect": "No equivale a dolor de rebote negado."
+        },
+        {
+          "code": "43478001",
+          "display": "dolor abdominal a la palpación",
+          "fsn": [
+            "dolor abdominal a la palpación (hallazgo)",
+            "Abdominal tenderness (finding)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_43478001.json",
+          "whyNotCorrect": "Palpación directa no equivale a rebote; está presente en otra parte de nota."
+        }
+      ],
+      "editorialNote": "Dolor a la palpación aparece en otra parte de la nota; preguntar estrictamente por sin reacción peritoneal."
+    },
+    {
+      "id": "corpus-021",
+      "literal": "Nefrectomia derecha",
+      "originalReferenceCode": null,
+      "reference": {
+        "code": "765473008",
+        "display": "resección de riñón derecho",
+        "fsn": [
+          "resección de riñón derecho (procedimiento)",
+          "Excision of right kidney (procedure)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_765473008.json"
+      },
+      "distractors": [
+        {
+          "code": "765472003",
+          "display": "nefrectomía izquierda",
+          "fsn": [
+            "Excision of left kidney (procedure)",
+            "resección de riñón izquierdo (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_765472003.json",
+          "whyNotCorrect": "Lado opuesto."
+        },
+        {
+          "code": "1866009",
+          "display": "nefrectomía total de ambos riñones",
+          "fsn": [
+            "nefrectomía total de ambos riñones (procedimiento)",
+            "Bilateral total nephrectomy (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_1866009.json",
+          "whyNotCorrect": "No documenta extirpación de ambos riñones."
+        },
+        {
+          "code": "39834009",
+          "display": "inserción de tubo de nefrostomía",
+          "fsn": [
+            "inserción de sonda de nefrostomía (procedimiento)",
+            "Insertion of nephrostomy tube (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_39834009.json",
+          "whyNotCorrect": "Drenaje renal, no extirpación."
+        }
+      ]
+    },
+    {
+      "id": "corpus-022",
+      "literal": "by pass de arteria femoral comun -poplitea supraarticular con protesis",
+      "originalReferenceCode": "112828007",
+      "reference": {
+        "code": "112828007",
+        "display": "injerto en puente de arteria femoral a arteria poplítea",
+        "fsn": [
+          "Femoral-popliteal artery bypass graft (procedure)",
+          "injerto-puente de arteria femoral a arteria poplítea (procedimiento)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_112828007.json"
+      },
+      "distractors": [
+        {
+          "code": "405482000",
+          "display": "puente aortofemoral",
+          "fsn": [
+            "Aorto-femoral arterial bypass (procedure)",
+            "puente aortofemoral (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_405482000.json",
+          "whyNotCorrect": "Trayecto anatómico distinto."
+        },
+        {
+          "code": "15853003",
+          "display": "tromboendarterectomía con injerto de arterias femoral y poplítea",
+          "fsn": [
+            "Thromboendarterectomy with graft of femoral and popliteal arteries (procedure)",
+            "tromboendarterectomía con injerto de arterias femoral y poplítea (procedimiento)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_15853003.json",
+          "whyNotCorrect": "Endarterectomía no equivale a bypass documentado."
+        },
+        {
+          "code": "233281008",
+          "display": "angioplastia de la arteria femoral común",
+          "fsn": [
+            "angioplastia de la arteria femoral común (procedimiento)",
+            "Percutaneous transluminal angioplasty of common femoral artery using fluoroscopic guidance with contrast (procedure)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_233281008.json",
+          "whyNotCorrect": "Dilatación endovascular, no injerto-puente."
+        }
+      ]
+    },
+    {
+      "id": "corpus-023",
+      "literal": "FLEMON",
+      "originalReferenceCode": "128477000",
+      "reference": {
+        "code": "128477000",
+        "display": "absceso",
+        "fsn": [
+          "absceso (trastorno)",
+          "Abscess (disorder)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_128477000.json"
+      },
+      "distractors": [
+        {
+          "code": "123951002",
+          "display": "celulitis cutánea",
+          "fsn": [
+            "celulitis de la piel (trastorno)",
+            "Cellulitis of skin (disorder)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_123951002.json",
+          "whyNotCorrect": "Infección difusa; alternativa diferencial no literal FLEMON."
+        },
+        {
+          "code": "19471005",
+          "display": "linfadenitis",
+          "fsn": [
+            "linfadenitis (trastorno)",
+            "Lymphadenitis (disorder)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_19471005.json",
+          "whyNotCorrect": "Afectación ganglionar no documentada en literal."
+        },
+        {
+          "code": "42982001",
+          "display": "sialoadenitis",
+          "fsn": [
+            "Sialoadenitis (disorder)",
+            "sialoadenitis (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_42982001.json",
+          "whyNotCorrect": "Afectación glandular no documentada en literal."
+        }
+      ]
+    },
+    {
+      "id": "corpus-024",
+      "literal": "mollusco contagioso",
+      "originalReferenceCode": "40070004",
+      "reference": {
+        "code": "40070004",
+        "display": "infección por molusco contagioso",
+        "fsn": [
+          "Infection caused by Molluscum contagiosum (disorder)",
+          "infección causada por Molluscum contagiosum (trastorno)"
+        ],
+        "version": "http://snomed.info/sct/11000221109/version/20260520",
+        "inactive": false,
+        "evidenceFile": "lookup_40070004.json"
+      },
+      "distractors": [
+        {
+          "code": "57019003",
+          "display": "verruga simple",
+          "fsn": [
+            "verruga vulgar (trastorno)",
+            "Verruca vulgaris (disorder)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_57019003.json",
+          "whyNotCorrect": "Lesión viral distinta de molusco."
+        },
+        {
+          "code": "13600006",
+          "display": "foliculitis",
+          "fsn": [
+            "Folliculitis (disorder)",
+            "foliculitis (trastorno)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_13600006.json",
+          "whyNotCorrect": "Alternativa diferencial, no el literal seleccionado."
+        },
+        {
+          "code": "240542006",
+          "display": "verrugas anogenitales",
+          "fsn": [
+            "verrugas anogenitales (trastorno)",
+            "Anogenital warts (disorder)"
+          ],
+          "version": "http://snomed.info/sct/11000221109/version/20260520",
+          "inactive": false,
+          "evidenceFile": "lookup_240542006.json",
+          "whyNotCorrect": "Lesión distinta; localización inguinal no basta para identificarla."
+        }
+      ]
+    }
+  ],
+  "editorialGuidance": [
+    "Preguntar por el concepto del fragmento resaltado, no por cualquier concepto compatible con la nota.",
+    "Los distractores de subtipos se excluyen por precisión adicional no sustentada en el fragmento.",
+    "En fragmentos negados, el concepto se identifica por separado de la polaridad."
+  ]
+}
+

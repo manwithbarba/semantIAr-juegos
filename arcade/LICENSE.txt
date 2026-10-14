@@ -1,0 +1,19 @@
+SEMANTIAR-86 — LICENCIA DE MATERIALES PROPIOS
+
+Copyright (c) 2026 Proyecto SemantIAr
+Responsable: Julián Sánchez Viamonte
+Facultad de Ciencias Médicas, Universidad Nacional de La Plata (UNLP)
+
+El código propio de la consola SemantIAr-86, su documentación y los contenidos educativos propios se distribuyen bajo Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0).
+
+Se permite compartir y adaptar, incluso con fines comerciales, bajo las condiciones de atribución, enlace a la licencia, indicación de cambios y CompartirIgual establecidas en su texto legal:
+https://creativecommons.org/licenses/by-sa/4.0/legalcode.es
+
+Atribución sugerida: Proyecto SemantIAr — Julián Sánchez Viamonte, Facultad de Ciencias Médicas, UNLP. SemantIAr-86. https://manwithbarba.github.io/semantIAr-juegos/
+
+Los componentes de SNOMED CT y otros materiales de terceros conservan sus licencias y derechos de origen. CC BY-SA 4.0 no concede derechos adicionales sobre ellos. Véase NOTICE-SNOMED del corpus:
+https://github.com/manwithbarba/semantiar-terminology-corpus/blob/main/NOTICE-SNOMED.md
+
+Los datos propios derivados del corpus mantienen la licencia y las condiciones documentadas en su repositorio:
+https://github.com/manwithbarba/semantiar-terminology-corpus/blob/main/LICENSE-DATA.txt
+

@@ -8,6 +8,12 @@
 
 La aplicación tiene fines educativos y recreativos. No diagnostica, no recomienda códigos para la atención y no reemplaza la revisión de un profesional con formación en terminología clínica.
 
+## Consola retro y navegación móvil
+
+La portada de GitHub Pages es **SEMANTIAR-86**. Su fuente editable está en [`arcade/`](arcade/README.md): tres cartuchos educativos, scoreboard local, controles táctiles y biblioteca adaptada a celulares. El despliegue compila el explorador Next.js y copia la consola retro a la portada. Así, publicar desde `main` conserva ambas experiencias.
+
+Pruebas del juego: `node arcade/tests/game.test.mjs`. Los récords se guardan en el navegador, sin clasificación remota ni métricas de validación clínica.
+
 ## Qué incluye
 
 ### Juego de calibración

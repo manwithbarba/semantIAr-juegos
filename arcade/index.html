@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#07110b" />
+  <title>SEMANTIAR-86 // Consola Retro de Semántica y Revisión Terminológica Clínica</title>
+  <meta name="description" content="Edición Consola Retro Arcade de SEMANTIAR Quiz: anotación semántica clínica 6D, Capa Léxica v2 y Revisión Terminológica (Revisión semantiar-terminology-corpus) sobre SNOMED CT Edición Argentina 20260520." />
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="green">
+  <a class="skip-link" href="#viewPlay">Ir a la partida</a>
+<aside id="mobileScore" aria-label="Marcador móvil" hidden></aside>
+<div id="liveStatus" class="sr-only" role="status" aria-live="polite"></div>
+<div class="arcade-cabinet">
+    <!-- HARDWARE TOP BAR -->
+    <header class="cabinet-header">
+      <div class="brand-cluster">
+        <div class="power-led" title="Consola encendida"></div>
+        <div>
+          <div class="brand-title">🕹️ SEMANTIAR-86 // ARCADE EDUCATIVO v3.0</div>
+          <div class="brand-sub">UNLP · FCM · SNOMED CT Edición Nacional Argentina (20260520) · Corpus v2</div>
+        </div>
+      </div>
+      <details class="hardware-settings" open>
+        <summary>⚙️ Pantalla y sonido</summary>
+      <div class="hardware-switches">
+        <button class="hw-btn active" id="btnThemeGreen" onclick="setTheme('green')">🟢 P1 Verde</button>
+        <button class="hw-btn" id="btnThemeAmber" onclick="setTheme('amber')">🟠 P3 Ámbar</button>
+        <button class="hw-btn" id="btnThemeCyan" onclick="setTheme('cyan')">🔵 Vector Cian</button>
+        <button class="hw-btn" id="btnThemeHC" onclick="setTheme('high-contrast')">⚪ Alto Contraste</button>
+        <button class="hw-btn active" id="btnCrtToggle" onclick="toggleCRT()">📺 CRT Scanlines: ON</button>
+        <button class="hw-btn active" id="btnSfxToggle" onclick="toggleSFX()">🔊 SFX 8-Bit: ON</button>
+      </div>
+      </details>
+    </header>
+
+    <!-- CRT MONITOR -->
+    <div class="crt-bezel">
+      <main class="crt-screen crt-fx" id="crtScreen">
+        <!-- TOP HUD -->
+        <section class="hud-bar" aria-label="Estado de partida">
+          <div class="hud-cell">
+            <span class="hud-label">Modo Activo</span>
+            <span class="hud-val cyan" id="hudMode">1P · SEMÁNTICA 6D</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">Score / Racha</span>
+            <span class="hud-val amber" id="hudScore">0000 · x0</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">Progreso Ronda</span>
+            <span class="hud-val" id="hudProgress">STANDBY</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">Vidas / Aciertos</span>
+            <span class="hud-val magenta" id="hudLives">♥♥♥ (—)</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">Récord · mismas reglas</span>
+            <span class="hud-val" id="hudBest">Sin récord</span>
+          </div>
+        </section>
+
+        <!-- NAVIGATION CARTRIDGE TABS -->
+        <nav class="mode-tabs" aria-label="Cartuchos del sistema">
+          <button class="tab-btn active" id="tabMenu" onclick="switchView('menu')">🏠 [F1] Sala Arcade (Inicio)</button>
+          <button class="tab-btn" id="tabPlay" onclick="switchView('play')">🎯 [F2] Partida en Curso</button>
+          <button class="tab-btn" id="tabCodex" onclick="switchView('codex')">📚 [F3] Biblioteca de ejercicios</button>
+          <a class="tab-btn" href="documentation.html" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Documentación ↗</a>
+          <a class="tab-btn" href="https://github.com/manwithbarba/semantIAr-juegos/issues/new" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Informar un error ↗</a>
+        </nav>
+
+        <!-- EDUCATIONAL DISCLAIMER -->
+        <div class="edu-warning">
+          <span>⚠️ <strong>AVISO EDUCATIVO:</strong> Aplicación con fines exclusivamente educativos, docentes y recreativos sobre el corpus público <code>semantiar-lexical-terminology.v2</code>.</span>
+          <span class="badge-chip amber">1.365 entradas · 1.560 ocurrencias · 21 revisiones</span>
+        </div>
+
+        <!-- VIEW 1: START / ARCADE LOBBY -->
+        <section id="viewMenu">
+          <div class="retro-panel">
+            <div class="retro-panel-header">
+              <div class="retro-title">👾 SELECCIONÁ TU CARTUCHO Y DIFICULTAD</div>
+              <span class="badge-chip cyan" id="datasetCounterBadge">Banco cargado: 24 casos 6D + 16 casos Léxicos v2 + 16 casos Auditoría</span>
+            </div>
+
+            <p style="font-size: 0.84rem; color: var(--phos-dim); margin-bottom: 14px;">
+              Entrená la resolución semántica en español clínico rioplatense.
+            </p>
+
+            <!-- 3 GAME MODES -->
+            <div class="dimensions-grid">
+              <div class="dim-card" id="cardModeSemantic">
+                <div class="dim-header">
+                  <span class="dim-title">CARTUCHO 01 // SEMÁNTICA CLÍNICA 6D</span>
+                  <span class="badge-chip">24 Casos</span>
+                </div>
+                <p class="dim-help">Clasificá menciones clínicas en contexto según seis dimensiones de práctica: Categoría, Polaridad, Certeza, Temporalidad, Sujeto y Término SNOMED CT.</p>
+                <button class="btn-arcade" style="width:100%; margin-top:6px;" onclick="selectGameMode('semantic')">Elegir Semántica 6D</button>
+              </div>
+
+              <div class="dim-card" id="cardModeLexical">
+                <div class="dim-header">
+                  <span class="dim-title">CARTUCHO 02 // CAPA LÉXICA v2 (SIGLAS)</span>
+                  <span class="badge-chip purple">16 Casos</span>
+                </div>
+                <p class="dim-help">Desambiguá abreviaturas, siglas y formas breves rioplatenses: tipo formal, función, sección y expansión.</p>
+                <button class="btn-arcade cyan" style="width:100%; margin-top:6px;" onclick="selectGameMode('lexical')">Elegir Capa Léxica v2</button>
+              </div>
+
+              <div class="dim-card" id="cardModeAudit">
+                <div class="dim-header">
+                  <span class="dim-title">CARTUCHO 03 // REVISIÓN DE CANDIDATOS</span>
+                  <span class="badge-chip amber">16 Casos</span>
+                </div>
+                <p class="dim-help">Evaluá candidatos de recuperación vectorial vs revisión humana.</p>
+                <button class="btn-arcade secondary" style="width:100%; margin-top:6px;" onclick="selectGameMode('audit')">Elegir Auditoría</button>
+              </div>
+            </div>
+
+            <!-- DIFFICULTY & ROUND SETTINGS -->
+            <div class="retro-panel" style="background: var(--crt-panel-alt); margin-bottom: 0;">
+              <div class="retro-panel-header">
+                <span class="retro-title" style="font-size: 0.88rem;">⚙️ CONFIGURACIÓN DE RONDA ARCADE</span>
+                <span class="badge-chip" id="selectedModeLabel">Modo seleccionado: SEMÁNTICA CLÍNICA 6D</span>
+              </div>
+
+              <div class="dimensions-grid" style="margin-bottom: 10px;">
+                <div>
+                  <div class="hud-label" style="margin-bottom: 6px;">Nivel de Complejidad / Filtro</div>
+                  <div class="options-list">
+                    <button class="opt-btn selected" id="diff_all" onclick="setDifficulty('all')">Todos (Mix Completo)</button>
+                    <button class="opt-btn" id="diff_facil" onclick="setDifficulty('facil')">Fácil / Básico (&lt;130 car.)</button>
+                    <button class="opt-btn" id="diff_normal" onclick="setDifficulty('normal')">Normal / Avanzado (130-250)</button>
+                    <button class="opt-btn" id="diff_dificil" onclick="setDifficulty('dificil')">Difícil / Experto (&gt;250 car.)</button>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="hud-label" style="margin-bottom: 6px;">Cantidad de Casos y Reglas</div>
+                  <div class="options-list">
+                    <button class="opt-btn" id="len_5" onclick="setRoundLength(5)">Ronda Corta (5)</button>
+                    <button class="opt-btn selected" id="len_10" onclick="setRoundLength(10)">Estándar (10)</button>
+                    <button class="opt-btn" id="len_15" onclick="setRoundLength(15)">Maratón (15)</button>
+                    <button class="opt-btn" id="timerToggleBtn" onclick="toggleTimerMode()">⏱️ Reloj: Libre</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="arcade-actions">
+                <div style="font-size: 0.78rem; color: var(--phos-dim);" id="filteredCountInfo">
+                  Casos disponibles en este filtro: <strong>24</strong>
+                </div>
+                <button class="btn-arcade" onclick="startNewRound()">▶ INSERT COIN // COMENZAR RONDA</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PLAYER STATS & BADGES PANEL -->
+          <div class="retro-panel">
+            <div class="retro-panel-header">
+              <div class="retro-title">🏆 TARJETA DE MEMORIA DEL ANOTADOR (LOCALSTORAGE)</div>
+              <button class="hw-btn" onclick="resetStats()">🗑️ Reiniciar Récords</button>
+            </div>
+            <div class="hud-bar" style="margin-bottom: 10px;">
+              <div class="hud-cell">
+                <span class="hud-label">Rondas Jugadas</span>
+                <span class="hud-val" id="statRounds">0</span>
+              </div>
+              <div class="hud-cell">
+                <span class="hud-label">Puntaje Acumulado</span>
+                <span class="hud-val amber" id="statTotalScore">0 / 0</span>
+              </div>
+              <div class="hud-cell">
+                <span class="hud-label">Aciertos del juego</span>
+                <span class="hud-val cyan" id="statGlobalAcc">0%</span>
+              </div>
+              <div class="hud-cell">
+                <span class="hud-label">Mejor Racha</span>
+                <span class="hud-val" id="statBestStreak">0</span>
+              </div>
+            </div>
+            <div id="resetConfirm" hidden><p>¿Borrar el historial local de partidas?</p><button class="btn-arcade" onclick="confirmResetStats()">Sí, borrar historial</button><button class="btn-arcade secondary" onclick="document.getElementById('resetConfirm').hidden=true">Cancelar</button></div>
+<div id="badgesContainer" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+          </div>
+        </section>
+
+        
+<section class="retro-panel" id="rankingPanel" aria-labelledby="rankingTitle" tabindex="-1">
+  <h2 id="rankingTitle" class="retro-title">🏆 SCOREBOARD · PARTIDAS LOCALES</h2>
+  <p class="dim-help" id="rankingRules" tabindex="-1"></p>
+  <ol id="rankingList" class="ranking-list"></ol>
+  <p id="storageStatus" class="dim-help"></p>
+  <p class="dim-help">1 punto por respuesta que coincide con la referencia. La racha no multiplica puntos. Las pistas no restan; se comparan partidas con igual cantidad de pistas. No es una evaluación clínica.</p>
+</section>
+<!-- VIEW 2: ACTIVE GAMEPLAY -->
+        <section id="viewPlay" class="hidden" tabindex="-1">
+          <div class="retro-panel" id="playContainer">
+            <!-- Populated dynamically by renderCurrentQuestion() -->
+          </div>
+        </section>
+
+        <!-- VIEW 3: CODEX Revisión (CORPUS EXPLORER) -->
+        <section id="viewCodex" class="hidden">
+          <div class="retro-panel">
+            <div class="retro-panel-header">
+              <div class="retro-title">📚 CODEX TERMINOLÓGICO // SEMANTIAR CORPUS v2</div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="codexSearch" aria-label="Buscar ejercicios" class="search-input" placeholder="Buscar sigla, término o SCTID..." oninput="scheduleCodexSearch()" />
+                <select id="codexFilter" aria-label="Filtrar banco" class="select-input" onchange="renderCodexTable()">
+                  <option value="all" selected>Todas las capas (6D + Léxica + Revisión terminológica)</option>
+                  <option value="semantic">Capa Clínica 6D (SNOMED CT)</option>
+                  <option value="lexical">Capa Léxica v2 (Formas breves)</option>
+                  <option value="audit">Revisiones Aceptadas Revisión (REVIEW_DECISIONS)</option>
+                </select>
+              </div>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--phos-dim); margin-bottom: 10px;">
+              Explorá los 56 ejercicios incluidos. Esta vista contiene el banco del juego; el recurso completo está disponible en el repositorio público. Las 16 revisiones educativas son una selección de las 21 decisiones públicas del Revisión.
+            </p>
+            <div class="codex-table-wrap">
+              <table class="codex-table">
+                <thead>
+                  <tr>
+                    <th>Capa / Origen</th>
+                    <th>Superficie / Span</th>
+                    <th>Categoría / Forma</th>
+                    <th>SCTID / Expansión</th>
+                    <th>Atributos / Acción</th>
+                    <th>Especialidad / Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="codexTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: REVIEW PROPOSAL -->
+
+      </main>
+    </div>
+
+    <!-- ARCADE PHYSICAL CONTROLLER BAR -->
+    <footer class="cabinet-deck">
+      <div class="dpad-cluster">
+        <button class="dpad-btn" title="Volver a sala arcade" onclick="switchView('menu')" aria-label="Volver a sala arcade">◀</button>
+        <button class="dpad-btn" title="Pista Clínica [H]" onclick="triggerHint()">?</button>
+        <button class="dpad-btn" title="Siguiente / Avanzar" onclick="arcadeStep(1)">▶</button>
+        <span class="deck-legend"><strong>CONTROLES:</strong> <code>TAB</code> recorre opciones · <code>ESPACIO</code> selecciona · <code>ENTER</code> confirma/avanza · <code>H</code> pista · <code>F1-F3</code> vistas</span>
+      </div>
+      <div class="ab-cluster">
+        <div style="text-align:right; font-size:0.72rem; color:var(--phos-dim);">
+          <div><strong>BOTÓN A:</strong> Confirmar / Siguiente</div>
+          <div><strong>BOTÓN B:</strong> Pista Semántica</div>
+        </div>
+        <button class="round-arcade-btn btn-b" title="Botón B: Pista" onclick="triggerHint()">B</button>
+        <button class="round-arcade-btn btn-a" title="Botón A: Acción Principal" onclick="triggerPrimaryAction()">A</button>
+      </div>
+    </footer>
+  </div>
+
+  <footer style="padding:16px;text-align:center">Proyecto SemantIAr · <a href="documentation.html#licencia" style="color:var(--accent-cyan)">CC BY-SA 4.0</a> · <a href="documentation.html" style="color:var(--accent-cyan)">Documentación</a></footer>
+  <nav class="mobile-nav" aria-label="Navegación móvil">
+    <button type="button" onclick="navigateView('menu')">🏠 Inicio</button>
+    <button type="button" onclick="navigateView('play')">🎯 Partida</button>
+    <button type="button" onclick="navigateView('codex')">📚 Biblioteca</button>
+    <button type="button" onclick="showRanking()">🏆 Puntajes</button>
+  </nav>
+  <script src="scoreboard.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
+

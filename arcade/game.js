@@ -1,0 +1,2112 @@
+
+    // =========================================================================
+    // 1. BANCO DE DATOS INTEGRADO:
+    //    - 6 casos originales de semantIAr-juegos (demo-001 a demo-006)
+    //    - 18 casos clínicos reales desidentificados del corpus SemantIAr
+    //      (cubriendo Fácil <130 chars, Normal 130-250 chars, Difícil >250 chars)
+    //    - 16 casos de Capa Léxica v2 (lexical_inventory.jsonl)
+    //    - 16 casos de Revisión Terminológica  
+    // =========================================================================
+
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    }
+
+    const SEMANTIC_CASES = [
+      // --- 6 CASOS ORIGINALES DE SEMANTIAR-JUEGOS ---
+      {
+        id: "demo-001",
+        caseId: "demo-case-1",
+        annotator: "Sintético (Original)",
+        specialty: "Guardia / Emergencias",
+        mappingStatus: "human_agreement",
+
+        text: "GUARDIA: Paciente hemodinámicamente estable, buena mecánica ventilatoria con SPO2 95% al aire ambiente, dentro del rango de referencia. Se encuentra afebril, eupneico y lúcido.",
+        literal: "SPO2 95%",
+        start: 77,
+        end: 85,
+        cat: "Hallazgo clínico",
+        sctid: "448225001",
+        term: "saturación de oxígeno normal",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "La pulsioximetría de 95% ventilando al aire ambiente constituye un hallazgo clínico activo, confirmado y actual del paciente."
+      },
+      {
+        id: "demo-002",
+        caseId: "demo-case-2",
+        annotator: "Sintético (Original)",
+        specialty: "Terapia Intensiva",
+        mappingStatus: "human_agreement",
+
+        text: "PACIENTE EN ARM: Conectado a ventilador mediante tubo endotraqueal en modo espontáneo, adaptado, con BIC FNT a 2 ml/h para analgesia y sedación estable.",
+        literal: "en ARM",
+        start: 9,
+        end: 15,
+        cat: "Procedimiento",
+        sctid: "1258985005",
+        term: "ventilación mecánica invasiva",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "ARM (Asistencia Respiratoria Mecánica) indica un procedimiento de soporte ventilatorio invasivo activo en curso."
+      },
+      {
+        id: "demo-003",
+        caseId: "demo-case-2",
+        annotator: "Sintético (Original)",
+        specialty: "Terapia Intensiva",
+        mappingStatus: "human_agreement",
+
+        text: "PACIENTE EN ARM: Conectado a ventilador mediante tubo endotraqueal en modo espontáneo, adaptado, con BIC FNT a 2 ml/h para analgesia y sedación estable.",
+        literal: "BIC FNT",
+        start: 74,
+        end: 81,
+        cat: "Fármaco",
+        sctid: "40648001",
+        term: "producto que contiene fentanilo",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "FNT refiere a fentanilo; se elige el producto medicinal con ese ingrediente. Morfina, remifentanilo y sufentanilo son ingredientes distintos."
+      },
+      {
+        id: "demo-004",
+        caseId: "demo-case-3",
+        annotator: "Sintético (Original)",
+        specialty: "Clínica Médica",
+        mappingStatus: "human_agreement",
+
+        text: "CONSULTA EXTERNA: Paciente refiere preocupación por antecedentes familiares de diabetes mellitus tipo 2 en su madre y tíos maternos.",
+        literal: "antecedentes familiares de diabetes mellitus tipo 2",
+        start: 52,
+        end: 103,
+        cat: "Hallazgo clínico",
+        sctid: "430679000",
+        term: "antecedente familiar de diabetes mellitus tipo 2",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Histórico",
+        suj: "Familiar",
+        rationale: "El literal especifica un antecedente familiar de diabetes tipo 2. No corresponde a un antecedente personal ni a otro tipo de diabetes."
+      },
+      {
+        id: "demo-005",
+        caseId: "demo-case-4",
+        annotator: "Sintético (Original)",
+        specialty: "Enfermería",
+        mappingStatus: "human_agreement",
+
+        text: "EVOLUCIÓN ENFERMERÍA: Paciente reactivo, afebril, hemodinámicamente estable, refiere no presentar dolor torácico en la jornada de hoy.",
+        literal: "no presentar dolor torácico",
+        start: 85,
+        end: 112,
+        cat: "Hallazgo clínico",
+        sctid: "29857009",
+        term: "dolor de pecho",
+        pol: "Negado",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Se codifica el concepto nuclear 'dolor en el pecho' (29857009) acompañado del atributo contextual Polaridad: Negado."
+      },
+      {
+        id: "demo-006",
+        caseId: "demo-case-5",
+        annotator: "Sintético (Original)",
+        specialty: "Clínica Quirúrgica",
+        mappingStatus: "human_agreement",
+
+        text: "INGRESO: Paciente cursando postoperatorio inmediato con sospecha de infección del tracto urinario asociada a sonda vesical permanente.",
+        literal: "sospecha de infección del tracto urinario",
+        start: 56,
+        end: 97,
+        cat: "Hallazgo clínico",
+        sctid: "68566005",
+        term: "enfermedad infecciosa de las vías urinarias",
+        pol: "Activo",
+        cert: "Sospecha",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "La expresión 'sospecha de' fija el atributo contextual Certeza en 'Sospecha' sobre el hallazgo clínico infección urinaria."
+      },
+
+      // --- CASOS CORTOS (< 130 CARACTERES) - NIVEL FÁCIL / BÁSICO ---
+      {
+        id: "corpus-007",
+        caseId: "hsi-amb-01",
+        annotator: "Corpus v2 (human_agreement)",
+        specialty: "Clínica Médica",
+        mappingStatus: "human_agreement",
+
+        text: "GUARDIA CLÍNICA: Paciente vigil, BEG, normohidratado, afebril al control actual, ventilando espontáneamente.",
+        literal: "afebril",
+        start: 54,
+        end: 61,
+        cat: "Hallazgo clínico",
+        sctid: "386661006",
+        term: "fiebre",
+        pol: "Negado",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Regla canónica del corpus v2: 'afebril' se vincula a 'fiebre' (386661006) con Polaridad: Negado (nunca debe perderse el atributo de negación)."
+      },
+      {
+        id: "corpus-008",
+        caseId: "hsi-amb-02",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Ginecología y Obstetricia",
+        mappingStatus: "human_adjudicated",
+
+        text: "CONTROL AMBULATORIO: Paciente en seguimiento. Al examen físico: abdomen blando depresible indoloro. RHA conservados.",
+        literal: "abdomen blando depresible indoloro.",
+        start: 64,
+        end: 99,
+        cat: "Hallazgo clínico",
+        sctid: "43478001",
+        term: "dolor abdominal a la palpación",
+        pol: "Negado",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Adjudicación humana del corpus v2: la ausencia explícita de dolor a la palpación abdominal se registra con Polaridad: Negado."
+      },
+      {
+        id: "corpus-009",
+        caseId: "hsi-int-03",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Medicina de Emergencias",
+        mappingStatus: "human_adjudicated",
+
+        text: "OBSERVACIÓN GUARDIA: Paciente ingresa con disnea moderada, se coloca (O2 3 LT) por cánula nasal con buena respuesta.",
+        literal: "(O2 3 LT)",
+        start: 69,
+        end: 78,
+        cat: "Procedimiento",
+        sctid: "57485005",
+        term: "terapia por oxígeno",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "En la capa clínica humana, '(O2 3 LT)' representa el procedimiento de oxigenoterapia (57485005); en  se rechazó el candidato FAISS 'tubo de oxígeno, 300 litros'."
+      },
+      {
+        id: "corpus-010",
+        caseId: "hsi-amb-04",
+        annotator: "Corpus v2 (human_agreement)",
+        specialty: "Cardiología",
+        mappingStatus: "human_agreement",
+
+        text: "CARDIOLOGÍA: Paciente en control crónico, eupneico, niega angor y palpitaciones. TA 120/75 mmHg, FC 68 lpm.",
+        literal: "angor",
+        start: 58,
+        end: 63,
+        cat: "Hallazgo clínico",
+        sctid: "194828000",
+        term: "síndrome anginoso",
+        pol: "Negado",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Acuerdo humano en Cardiología: 'angor' precedido por 'niega' se codifica como angina de pecho (194828000) con Polaridad: Negado."
+      },
+      {
+        id: "corpus-011",
+        caseId: "hsi-amb-05",
+        annotator: "Corpus v2 (human_agreement)",
+        specialty: "Clínica Médica",
+        mappingStatus: "human_agreement",
+
+        text: "CONSULTORIO: Dolor epigástrico intermitente. Al examen se palpa probable hernia epigastrica reductible; pido ecografía.",
+        literal: "hernia epigastrica",
+        start: 73,
+        end: 91,
+        cat: "Hallazgo clínico",
+        sctid: "289260002",
+        term: "hernia epigástrica",
+        pol: "Activo",
+        cert: "Sospecha",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Acuerdo humano del corpus v2: 'probable hernia epigastrica' se registra con Certeza: Sospecha sobre el SCTID 289260002."
+      },
+      {
+        id: "corpus-012",
+        caseId: "hsi-ped-06",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Neonatología / Pediatría",
+        mappingStatus: "human_adjudicated",
+
+        text: "ALTA CONJUNTA NEONATOLOGÍA: RN vigoroso, lactancia materna exclusiva. Se brinda puericultura y signos de alarma a la madre.",
+        literal: "puericultura",
+        start: 80,
+        end: 92,
+        cat: "Procedimiento",
+        sctid: "408991007",
+        term: "enseñanza de puericultura",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Familiar",
+        rationale: "En el corpus v2, la educación en puericultura dirigida a la madre/cuidador se adjudicó como Procedimiento con Sujeto: Familiar."
+      },
+
+      // --- CASOS INTERMEDIOS (130 a 250 CARACTERES) - NIVEL NORMAL / AVANZADO ---
+      {
+        id: "corpus-013",
+        caseId: "hsi-orl-07",
+        annotator: "Calibración 5 (A053 / Corpus v2)",
+        specialty: "Otorrinolaringología",
+        mappingStatus: "human_adjudicated",
+
+        text: "Paciente que concurre a control por oma izquierda en tto con amoxicilina desde hace 48 hs. aFEBRIL, NIEGA DOLOR AL MOMENTO DE LA CONSULTA. oTOSCOPIA SP. INDICO: CONTINUAR ATB A CUMPLIR 10 DIAS / PAUTAS DE ALARMA.",
+        literal: "amoxicilina",
+        start: 61,
+        end: 72,
+        cat: "Fármaco",
+        sctid: "27658006",
+        term: "producto que contiene amoxicilina",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Esquema antibiótico activo actual para otitis media aguda izquierda, normalizado al concepto de producto con amoxicilina (27658006)."
+      },
+      {
+        id: "corpus-014",
+        caseId: "hsi-orl-07b",
+        annotator: "Calibración 5 (A053 / Corpus v2)",
+        specialty: "Otorrinolaringología",
+        mappingStatus: "human_adjudicated",
+
+        text: "Paciente que concurre a control por oma izquierda en tto con amoxicilina desde hace 48 hs. aFEBRIL, NIEGA DOLOR AL MOMENTO DE LA CONSULTA. oTOSCOPIA SP. INDICO: CONTINUAR ATB A CUMPLIR 10 DIAS / PAUTAS DE ALARMA.",
+        literal: "PAUTAS DE ALARMA",
+        start: 195,
+        end: 211,
+        cat: "Procedimiento",
+        sctid: "223413005",
+        term: "asesoramiento acerca de signos y síntomas",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "La indicación de pautas de alarma constituye un procedimiento educativo clínico activo brindado en la consulta."
+      },
+      {
+        id: "corpus-015",
+        caseId: "hsi-uro-08",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Urología",
+        mappingStatus: "human_adjudicated",
+
+        text: "UROLOGÍA: Paciente de 64 años con antecedente de acv isquémico hace 4 años sin secuelas motoras mayores. Ecografía vesical actual sin imagenes endoluminales sospechosas. Continúa control anual.",
+        literal: "acv",
+        start: 49,
+        end: 52,
+        cat: "Hallazgo clínico",
+        sctid: "230690007",
+        term: "ACV",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Histórico",
+        suj: "Paciente",
+        rationale: "El ACV ocurrido hace 4 años es un antecedente personal patológico del paciente (Polaridad: Activo, Temporalidad: Histórico)."
+      },
+      {
+        id: "corpus-016",
+        caseId: "hsi-cli-09",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Clínica Médica",
+        mappingStatus: "human_adjudicated",
+
+        text: "INTERCONSULTA CLÍNICA: Paciente con edema asimétrico en miembro inferior derecho de 48 hs de evolución. Se solicita ecodoppler venoso de urgencia para diagnóstico diferencial de trombosis venosa profunda.",
+        literal: "ecodoppler",
+        start: 116,
+        end: 126,
+        cat: "Procedimiento",
+        sctid: "1187106001",
+        term: "ultrasonografía Doppler",
+        pol: "Activo",
+        cert: "Diferencial",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Registro del corpus v2 con Certeza: Diferencial al solicitarse el estudio en el marco de un planteo diagnóstico diferencial."
+      },
+      {
+        id: "corpus-017",
+        caseId: "hsi-ped-10",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Pediatría",
+        mappingStatus: "human_adjudicated",
+
+        text: "PEDIATRÍA: Lactante traído a control por contacto estrecho conviviente (tío paterno internado con diagnóstico confirmado de TBC MENINGEA). Paciente asintomático, se solicita PPD y RxTx.",
+        literal: "TBC MENINGEA",
+        start: 124,
+        end: 136,
+        cat: "Hallazgo clínico",
+        sctid: "90302003",
+        term: "tuberculosis de las meninges cerebrales",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Familiar",
+        rationale: "El diagnóstico de tuberculosis meníngea corresponde al familiar conviviente (Sujeto: Familiar), motivando el estudio de contacto."
+      },
+      {
+        id: "corpus-018",
+        caseId: "hsi-ger-11",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Geriatría",
+        mappingStatus: "human_adjudicated",
+
+        text: "GERIATRÍA: Paciente de 78 años que cursó cuadro respiratorio hace 3 semanas tratado con azitromicina por 5 días. Actualmente en buen estado general, medicado crónicamente con aas 100 mg/día.",
+        literal: "azitromicina",
+        start: 88,
+        end: 100,
+        cat: "Fármaco",
+        sctid: "96034006",
+        term: "producto que contiene azitromicina",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Histórico",
+        suj: "Paciente",
+        rationale: "El esquema antibiótico con azitromicina ya fue finalizado hace 3 semanas, por lo que se registra con Temporalidad: Histórico."
+      },
+
+      // --- CASOS LARGOS (> 250 CARACTERES) - NIVEL DIFÍCIL / EXPERTO ---
+      {
+        id: "corpus-019",
+        caseId: "hsi-int-12",
+        annotator: "Calibración 5 (A053 / Corpus v2)",
+        specialty: "Medicina Interna",
+        mappingStatus: "human_adjudicated",
+
+        text: "SV TA 110/70 MMHG FC 76 LPM TEMP 36.6°C SAT 98 % BALANCE Ingreso: 1700 Egreso: 1000 Total:+700 LABORATORIO DATOS POSITIVOS HTO 34% HB 11.5 LUCO 14.140 PLAQ 345.000 IONO 133/4/101 UREA 33 CREAT 0.64 EAB 7.38/23/-2.3/97.4% LACTICO 2.7. Paciente hemodinámicamente compensado en sala general.",
+        literal: "EAB",
+        start: 198,
+        end: 201,
+        cat: "Procedimiento",
+        sctid: "250570001",
+        term: "evaluación del equilibrio ácido-base",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "En notas densas de internación (>250 caracteres), la sigla 'EAB' seguida de gases arteriales se codifica como evaluación del equilibrio ácido-base (250570001)."
+      },
+      {
+        id: "corpus-020",
+        caseId: "hsi-int-13",
+        annotator: "Calibración 5 (A033 / Corpus v2)",
+        specialty: "Clínica Quirúrgica",
+        mappingStatus: "human_adjudicated",
+
+        text: "Paciente que cursa internación en sala general por cuadro de colecistitis aguda litiásica. Clínicamente estable, afebril. Abdomen blando, depresible, menor dolor a la palpación en hipocondrio derecho, sin reaccion peritoneal. Tolera dieta oral líquida. Continúa esquema ATB endovenoso y control evolutivo por cirugía.",
+        literal: "sin reaccion peritoneal",
+        start: 201,
+        end: 224,
+        cat: "Hallazgo clínico",
+        sctid: "35611005",
+        term: "dolor a la descompresión",
+        pol: "Negado",
+        cert: "Confirmado",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "La expresión sin reacción peritoneal se representa en este ejercicio como dolor a la descompresión con polaridad Negado. No equivale al dolor de la palpación directa ni a la defensa o rigidez."
+      },
+      {
+        id: "corpus-021",
+        caseId: "hsi-amb-14",
+        annotator: "Calibración 5 (A033 / Corpus v2)",
+        specialty: "Urología / Clínica Médica",
+        mappingStatus: "human_adjudicated",
+
+        text: "Paciente masculino de 67 años. Ex TBQ / HTA crónica en tratamiento. Antecedentes quirúrgicos: vesícula / Nefrectomia derecha x Tumor Renal hace 6 años. Medicación habitual: enalapril / T4 / Genfibrozil / Tadalafilo 1 x día. Consulta actual por prostatismo, chorro miccional débil y nocturia x 3. Solicito PSA + ECO renovesical.",
+        literal: "Nefrectomia derecha",
+        start: 105,
+        end: 124,
+        cat: "Procedimiento",
+        sctid: "765473008",
+        term: "resección de riñón derecho",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Histórico",
+        suj: "Paciente",
+        rationale: "El antecedente especifica resección del riñón derecho. No documenta resección izquierda ni bilateral; nefrostomía es un procedimiento de drenaje diferente."
+      },
+      {
+        id: "corpus-022",
+        caseId: "hsi-amb-15",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Clínica Médica / Cirugía Vascular",
+        mappingStatus: "human_adjudicated",
+
+        text: "EVOLUCIÓN VASCULAR PERIFÉRICA: Paciente de 71 años con antecedente de arteriopatía periférica severa, amputacion supracondilea de mmii izquierdo en 2023 y by pass de arteria femoral comun -poplitea supraarticular con protesis en miembro derecho. Concurre a control de herida quirúrgica, sin signos de flogosis ni colección.",
+        literal: "by pass de arteria femoral comun -poplitea supraarticular con protesis",
+        start: 155,
+        end: 225,
+        cat: "Procedimiento",
+        sctid: "112828007",
+        term: "injerto en puente de arteria femoral a arteria poplítea",
+        pol: "Activo",
+        cert: "Confirmado",
+        temp: "Histórico",
+        suj: "Paciente",
+        rationale: "Procedimiento vascular precoordinado ('injerto-puente de arteria femoral a arteria poplítea', 112828007) registrado como antecedente quirúrgico (Temporalidad: Histórico)."
+      },
+      {
+        id: "corpus-023",
+        caseId: "hsi-emg-16",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Medicina de Emergencias",
+        mappingStatus: "human_adjudicated",
+
+        text: "GUARDIA CENTRAL: Paciente de 34 años que consulta por odinofagia intensa, trismus leve y tumefacción submaxilar de 72 hs de evolución. Se evalúa por guardia con sospecha clínica de FLEMON odontogénico vs celulitis facial; se solicita laboratorio completo, hemocultivos e interconsulta urgente con cirugía maxilofacial.",
+        literal: "FLEMON",
+        start: 181,
+        end: 187,
+        cat: "Hallazgo clínico",
+        sctid: "128477000",
+        term: "absceso",
+        pol: "Activo",
+        cert: "Sospecha",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "El planteo de 'sospecha clínica de FLEMON' se adjudicó en el corpus v2 al concepto 'absceso' (128477000) con Certeza: Sospecha."
+      },
+      {
+        id: "corpus-024",
+        caseId: "hsi-der-17",
+        annotator: "Corpus v2 (human_adjudicated)",
+        specialty: "Dermatología / Ginecología",
+        mappingStatus: "human_adjudicated",
+
+        text: "CONSULTORIO EXTERNO DERMATOLOGÍA: Paciente joven que consulta por pápulas umbilicadas asintomáticas en región inguinal de tres semanas de evolución. ALERGIAS: niega. Se plantea diagnóstico diferencial con mollusco contagioso vs foliculitis; se solicita VDRL y panel serológico para descartar infecciones asociadas.",
+        literal: "mollusco contagioso",
+        start: 205,
+        end: 224,
+        cat: "Hallazgo clínico",
+        sctid: "40070004",
+        term: "infección por molusco contagioso",
+        pol: "Activo",
+        cert: "Diferencial",
+        temp: "Actual",
+        suj: "Paciente",
+        rationale: "Al formularse explícitamente como 'diagnóstico diferencial con mollusco contagioso vs foliculitis', el atributo Certeza corresponde a 'Diferencial'."
+      }
+    ];
+
+    // --- CAPA LÉXICA v2 (16 CASOS REALES DE lexical_inventory.jsonl) ---
+    const LEXICAL_CASES = [
+      {
+        id: "lex-001",
+        occurrenceId: "62d781d25033d9f33e5887f1",
+        specialty: "Medicina de emergencias",
+        text: "GUARDIA: Paciente con requerimiento de oxigenoterapia suplementaria, saturando 96% con (O2 3 LT) por cánula nasal.",
+        literal: "(O2 3 LT)",
+        formType: "alphanumeric",
+        function: "entity",
+        section: "signos vitales",
+        expansion: "aporte de oxígeno a 3 litros",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #1 aceptada en : forma alfanumérica con función de entidad clínica en signos vitales ('aporte de oxígeno a 3 litros'). No se infiere L/min sin denominador explícito."
+      },
+      {
+        id: "lex-002",
+        occurrenceId: "8d7d3ac79101b44f70404d40",
+        specialty: "Pediatría",
+        text: "INTERNACIÓN PEDIÁTRICA: Paciente eupneico, requerimiento de O2 por bigotera a 3L, buena entrada de aire bilateral.",
+        literal: "3L",
+        formType: "alphanumeric",
+        function: "value",
+        section: "signos vitales",
+        expansion: "tres litros",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #3 aceptada en : '3L' es una forma alfanumérica con función de valor ('tres litros'); se rechazó el candidato FAISS 'femtolitro'."
+      },
+      {
+        id: "lex-003",
+        occurrenceId: "c463b41a87b3823d4b767725",
+        specialty: "Clínica médica",
+        text: "EVOLUCIÓN SALA: Paciente vigil, hemodinámicamente estable, SatO2 98% ventilando a/a sin apremio respiratorio.",
+        literal: "a/a",
+        formType: "abbreviation",
+        function: "entity",
+        section: "examen físico",
+        expansion: "aire ambiente",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #4 aceptada en : abreviatura rioplatense 'a/a' = 'aire ambiente' (entidad). Se rechazó el mapeo FAISS a 'medio ambiente al aire libre'."
+      },
+      {
+        id: "lex-004",
+        occurrenceId: "dab91de12f90cb6617d86605",
+        specialty: "Clínica médica",
+        text: "EVOLUCIÓN: Abdomen blando, depresible e indoloro, RHA+, d+c+, tolerando dieta oral sin náuseas.",
+        literal: "d+c+",
+        formType: "symbolic_abbreviation",
+        function: "result",
+        section: "evolución",
+        expansion: "diuresis y catarsis presentes",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #11 aceptada en : abreviatura simbólica compuesta 'd+c+' = 'diuresis y catarsis presentes' con función de resultado."
+      },
+      {
+        id: "lex-005",
+        occurrenceId: "4e75daabd407a42899d932e9",
+        specialty: "Guardia / Urología",
+        text: "EXAMEN FÍSICO: Abdomen blando, sin defensa peritoneal. PPL bilateral negativa, sin globo vesical.",
+        literal: "PPL",
+        formType: "initialism",
+        function: "entity",
+        section: "examen físico",
+        expansion: "puñopercusión lumbar",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #18/#19 aceptada en : en semiología rioplatense 'PPL' es la sigla de 'puñopercusión lumbar' (maniobra de Giordano), NO 'punción lumbar' (Lumbar puncture)."
+      },
+      {
+        id: "lex-006",
+        occurrenceId: "1e98c8148300f6e84e453b24",
+        specialty: "Cardiología",
+        text: "AUSCULTACIÓN CARDIOVASCULAR: R1 y R2 normofonéticos en 4 focos, silencios libres, R3 R4 -, sin frote pericárdico.",
+        literal: "R3 R4 -",
+        formType: "alphanumeric",
+        function: "result",
+        section: "examen físico",
+        expansion: "tercer y cuarto ruidos cardíacos ausentes",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #21 aceptada en : 'R3 R4 -' indica 'tercer y cuarto ruidos cardíacos ausentes' (función: resultado). Se rechazó el candidato FAISS 'reflejo tricipital, ausente'."
+      },
+      {
+        id: "lex-007",
+        occurrenceId: "e6bfdc318b3e2a7221826ce7",
+        specialty: "Otorrinolaringología",
+        text: "CONDUCTA GUARDIA ORL: Se administra beta IM 3/3 mg dosis única y se reevalúa permeabilidad de vía aérea.",
+        literal: "beta IM 3/3 mg",
+        formType: "alphanumeric",
+        function: "entity",
+        section: "medicación o tratamiento",
+        expansion: "betametasona intramuscular, 3/3 mg",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #7/#8 aceptada en : 'beta IM 3/3 mg' corresponde a 'betametasona intramuscular, 3/3 mg' en medicación o tratamiento."
+      },
+      {
+        id: "lex-008",
+        occurrenceId: "f3ad63f1339aef275b25e6d9",
+        specialty: "Endocrinología",
+        text: "CONTROL METABÓLICO: Perfil lipídico actual con colesterol total 198 mg/dL, HDL 52 mg/dL y LDL 124 mg/dL.",
+        literal: "LDL",
+        formType: "initialism",
+        function: "modifier",
+        section: "estudios o resultados",
+        expansion: "lipoproteína de baja densidad",
+        status: "proposal_accepted_by_project_responsible",
+        rationale: "Revisión #14 aceptada en : sigla 'LDL' expandida como 'lipoproteína de baja densidad'; se rechazó el candidato FAISS 'LDL, subfracción 1'."
+      },
+      {
+        id: "lex-009",
+        occurrenceId: "lex-bdi-01",
+        specialty: "Neonatología / Clínica",
+        text: "EXAMEN FÍSICO: Paciente vigil, normohidratado. Abdomen BDI, sin visceromegalias palpables, RHA positivos.",
+        literal: "BDI",
+        formType: "initialism",
+        function: "entity",
+        section: "examen físico",
+        expansion: "blando, depresible e indoloro",
+        status: "source_resolved_not_independently_audited",
+        rationale: "Sigla semiológica abdominal clásica del español rioplatense: 'BDI' = 'blando, depresible e indoloro' (cuidado con el falso amigo inglés Beck Depression Inventory)."
+      },
+      {
+        id: "lex-010",
+        occurrenceId: "lex-beab-01",
+        specialty: "Pediatría / Neumonología",
+        text: "APARATO RESPIRATORIO: Tórax simétrico, eupneico, BEAB sin ruidos agregados ni tiraje intercostal.",
+        literal: "BEAB",
+        formType: "initialism",
+        function: "result",
+        section: "examen físico",
+        expansion: "buena entrada de aire bilateral",
+        status: "source_resolved_not_independently_audited",
+        rationale: "Sigla auscultatoria respiratoria rioplatense: 'BEAB' = 'buena entrada de aire bilateral' en la sección de examen físico."
+      },
+      {
+        id: "lex-011",
+        occurrenceId: "lex-beg-01",
+        specialty: "Clínica médica",
+        text: "EVOLUCIÓN MATUTINA: Paciente en BEG, afebril, orientado en tiempo, espacio y persona, hemodinámicamente estable.",
+        literal: "BEG",
+        formType: "initialism",
+        function: "entity",
+        section: "examen físico",
+        expansion: "buen estado general",
+        status: "source_resolved_not_independently_audited",
+        rationale: "Sigla clínica general: 'BEG' = 'buen estado general' (entidad clínica en examen físico)."
+      },
+      {
+        id: "lex-012",
+        occurrenceId: "lex-ams-01",
+        specialty: "Clínica médica",
+        text: "PLAN TERAPÉUTICO: Continúa internado cumpliendo esquema antibiótico empírico con ams 1.5 g EV cada 6 hs.",
+        literal: "ams",
+        formType: "acronym",
+        function: "entity",
+        section: "medicación o tratamiento",
+        expansion: "ampicilina sulbactam",
+        status: "source_resolved_not_independently_audited",
+        rationale: "En el inventario léxico rioplatense, 'ams' en medicación o tratamiento expande a 'ampicilina sulbactam'."
+      },
+      {
+        id: "lex-013",
+        occurrenceId: "lex-ae-01",
+        specialty: "Enfermería",
+        text: "PASE DE ENFERMERÍA: Paciente con sonda nasogástrica permeable, recibiendo AE por bomba de infusión con buena tolerancia.",
+        literal: "AE",
+        formType: "initialism",
+        function: "entity",
+        section: "medicación o tratamiento",
+        expansion: "alimentación enteral",
+        status: "source_resolved_not_independently_audited",
+        rationale: "En registros de enfermería y soporte nutricional, 'AE' es la sigla de 'alimentación enteral'."
+      },
+      {
+        id: "lex-014",
+        occurrenceId: "lex-biri-01",
+        specialty: "Medicina familiar / Cardiología",
+        text: "ESTUDIOS COMPLEMENTARIOS: ECG ritmo sinusal, FC 72 lpm, eje conservado, imagen de biri sin cambios agudos del ST.",
+        literal: "biri",
+        formType: "acronym",
+        function: "result",
+        section: "estudios o resultados",
+        expansion: "Bloqueo incompleto de rama izquierda",
+        status: "source_resolved_not_independently_audited",
+        rationale: "Acrónimo electrocardiográfico: 'biri' = 'Bloqueo incompleto de rama izquierda' con función de resultado en estudios complementarios."
+      },
+      {
+        id: "lex-015",
+        occurrenceId: "lex-cafo-01",
+        specialty: "Clínica médica / Terapia",
+        text: "SOPORTE VENTILATORIO: Paciente con insuficiencia respiratoria hipoxémica, se conecta a cafo con FiO2 40% y flujo 50 L/min.",
+        literal: "cafo",
+        formType: "abbreviation",
+        function: "entity",
+        section: "medicación o tratamiento",
+        expansion: "cánula nasal de alto flujo",
+        status: "source_resolved_not_independently_audited",
+        rationale: "'cafo' (Cánula de Alto Flujo de Oxígeno) se registra en el corpus como 'cánula nasal de alto flujo'."
+      },
+      {
+        id: "lex-016",
+        occurrenceId: "lex-aco-01",
+        specialty: "Endocrinología / Ginecología",
+        text: "ANTECEDENTES Y MEDICACIÓN: Paciente de 26 años sin patologías crónicas, en tratamiento actual con ACO regulares.",
+        literal: "ACO",
+        formType: "acronym",
+        function: "entity",
+        section: "medicación o tratamiento",
+        expansion: "Anticonceptivos orales combinados",
+        status: "source_resolved_not_independently_audited",
+        rationale: "Polisemia clásica: en ginecología/endocrinología joven 'ACO' expande a 'Anticonceptivos orales combinados' (mientras que en hematología/TVP puede referir a anticoagulación oral)."
+      }
+    ];
+
+    // --- AUDITORÍA TERMINOLÓGICA  (16 CASOS DE REVIEW_DECISIONS.json & AUDITORIA_Y_CAMBIOS.md) ---
+    const AUDIT_PR2_CASES = [
+      {
+        id: "pr2-001",
+        reviewNumber: 1,
+        occurrenceId: "62d781d25033d9f33e5887f1",
+        surface: "(O2 3 LT)",
+        contextNote: "Emergencias: aporte suplementario registrado como '(O2 3 LT)' en signos vitales.",
+        faissCandidate: "401955005 | tubo de oxígeno, 300 litros",
+        faissScore: 0.7001,
+        mappingAction: "reject_candidate",
+        auditFlag: "expansion_candidate_semantic_mismatch",
+        validatedSense: "aporte de oxígeno a 3 litros (separar oxigenoterapia y flujo)",
+        rationale: "Decisión #1 de REVIEW_DECISIONS.json: SapBERT+FAISS asoció '(O2 3 LT)' con un cilindro físico ('tubo de oxígeno, 300 litros', score 0.7001). Se rechaza el candidato y se aprueba la expansión léxica 'aporte de oxígeno a 3 litros'."
+      },
+      {
+        id: "pr2-002",
+        reviewNumber: 2,
+        occurrenceId: "e1f9467dda5f29d1f03e494a",
+        surface: "++",
+        contextNote: "Registro aislado del símbolo semicuantitativo '++' sin entidad adjunta en la fila exportada.",
+        faissCandidate: "441517005 | presente ++ sobre +++",
+        faissScore: 0.7981,
+        mappingAction: "withhold_mapping",
+        auditFlag: "undocumented_lexical_sense",
+        validatedSense: "Símbolo semicuantitativo; escala y elemento calificado desconocidos",
+        rationale: "Decisión #2 de REVIEW_DECISIONS.json: '++' es un modificador semicuantitativo cuya escala (++/+++ vs ++/++++) y signo calificado se desconocen sin la nota fuente. Acción: withhold_mapping."
+      },
+      {
+        id: "pr2-003",
+        reviewNumber: 3,
+        occurrenceId: "8d7d3ac79101b44f70404d40",
+        surface: "3L",
+        contextNote: "Pediatría (signos vitales): flujo o volumen expresado mediante la forma breve '3L'.",
+        faissCandidate: "258775009 | femtolitro",
+        faissScore: 0.7084,
+        mappingAction: "reject_candidate",
+        auditFlag: "expansion_candidate_semantic_mismatch",
+        validatedSense: "tres litros (valor 3, unidad L; no inferir L/min sin confirmación)",
+        rationale: "Decisión #3 de REVIEW_DECISIONS.json: Caso emblemático documentado en AUDITORIA_Y_CAMBIOS.md donde FAISS propuso 'femtolitro' (258775009) para '3L'. Se rechaza el candidato por discordancia semántica."
+      },
+      {
+        id: "pr2-004",
+        reviewNumber: 4,
+        occurrenceId: "c463b41a87b3823d4b767725",
+        surface: "a/a",
+        contextNote: "Evolución clínica: paciente saturando adecuadamente ventilando 'a/a'.",
+        faissCandidate: "224786002 | medio ambiente al aire libre",
+        faissScore: 0.8751,
+        mappingAction: "reject_candidate",
+        auditFlag: "expansion_candidate_semantic_mismatch",
+        validatedSense: "aire ambiente (respira aire ambiente solo si describe al paciente)",
+        rationale: "Decisión #4 de REVIEW_DECISIONS.json: Aunque tenía similitud alta (0.8751), 'medio ambiente al aire libre' (outdoor environment) es un falso positivo ontológico frente a 'ventilando al aire ambiente'."
+      },
+      {
+        id: "pr2-005",
+        reviewNumber: 5,
+        occurrenceId: "cbe61fc520ba0b99f98eb19c",
+        surface: "aci",
+        contextNote: "Sigla corta 'aci' registrada sin expansión documentada en la fuente.",
+        faissCandidate: "36021000221109 | AUCIC",
+        faissScore: 0.7262,
+        mappingAction: "reject_candidate",
+        auditFlag: "undocumented_lexical_sense",
+        validatedSense: "Sentido desconocido; no expandir aci por similitud superficial",
+        rationale: "Decisión #5 de REVIEW_DECISIONS.json: FAISS emparejó 'aci' con el nombre comercial 'AUCIC' por similitud de caracteres. Se rechaza el candidato y se mantiene sentido no documentado."
+      },
+      {
+        id: "pr2-006",
+        reviewNumber: 6,
+        occurrenceId: "4354a615a67bb8b75e16826b",
+        surface: "ar",
+        contextNote: "Abreviatura 'ar' en Clínica Médica sin contexto desambiguador suficiente.",
+        faissCandidate: "257996005 | r",
+        faissScore: 0.7084,
+        mappingAction: "reject_candidate",
+        auditFlag: "undocumented_lexical_sense",
+        validatedSense: "Sentido ambiguo; Clínica médica no permite desambiguar 'ar' (¿artritis reumatoidea, aparato respiratorio?)",
+        rationale: "Decisión #6 de REVIEW_DECISIONS.json: 'ar' es altamente polisémica y la sola etiqueta de especialidad no permite resolverla ni mapearla a 'r' (257996005)."
+      },
+      {
+        id: "pr2-007",
+        reviewNumber: 7,
+        occurrenceId: "e6bfdc318b3e2a7221826ce7",
+        surface: "beta IM 3/3 mg",
+        contextNote: "Otorrinolaringología (medicación): prescripción abreviada 'beta IM 3/3 mg'.",
+        faissCandidate: "234731000221106 | MYVITLA [IXAZOMIB 3 MG] CAPSULA DURA por 3 UNIDADES",
+        faissScore: 0.6204,
+        mappingAction: "reject_candidate",
+        auditFlag: "low_similarity_threshold",
+        validatedSense: "betametasona intramuscular, 3/3 mg",
+        rationale: "Decisión #7/#8 de REVIEW_DECISIONS.json: Candidato bajo umbral (0.6204) que mapeaba erróneamente a ixazomib oral por coincidencia numérica ('3 MG / 3 UNIDADES'). Se rechaza el candidato y se valida la expansión 'betametasona intramuscular, 3/3 mg'."
+      },
+      {
+        id: "pr2-008",
+        reviewNumber: 9,
+        occurrenceId: "6dbd7113ab4401aa910ca9fa",
+        surface: "Control en",
+        contextNote: "Fragmento truncado de planificación: 'Control en [plazo/servicio]'.",
+        faissCandidate: "31509003 | controlado",
+        faissScore: 0.8593,
+        mappingAction: "reject_candidate",
+        auditFlag: "expansion_candidate_semantic_mismatch",
+        validatedSense: "expresión de planificación de seguimiento (función estructural, no abreviatura)",
+        rationale: "Decisión #9 de REVIEW_DECISIONS.json: 'Control en' no es una abreviatura ni equivale al calificador 'controlado' (31509003); es una expresión estructural de seguimiento."
+      },
+      {
+        id: "pr2-009",
+        reviewNumber: 10,
+        occurrenceId: "dea510267511c7c63f2df8b7",
+        surface: "cvc",
+        contextNote: "Oftalmología (estudios o resultados): solicitud o informe de 'cvc'.",
+        faissCandidate: "230690007 | ACV",
+        faissScore: 0.7547,
+        mappingAction: "reject_candidate",
+        auditFlag: "undocumented_lexical_sense",
+        validatedSense: "Orientación semántica: campo visual computarizado en Oftalmología (expansión exacta pendiente)",
+        rationale: "Decisión #10 de REVIEW_DECISIONS.json: En Oftalmología 'cvc' remite a evaluación del campo visual (no a 'ACV' ni a catéter venoso central). Se rechaza el candidato 'ACV' (230690007)."
+      },
+      {
+        id: "pr2-010",
+        reviewNumber: 11,
+        occurrenceId: "dab91de12f90cb6617d86605",
+        surface: "d+c+",
+        contextNote: "Evolución clínica: registro compacto 'd+c+' sobre emuntorios fisiológicos.",
+        faissCandidate: "260347006 | presente + de ++++",
+        faissScore: 0.7567,
+        mappingAction: "reject_candidate",
+        auditFlag: "expansion_candidate_semantic_mismatch",
+        validatedSense: "diuresis y catarsis presentes (separar ambos hallazgos con atributos)",
+        rationale: "Decisión #11 de REVIEW_DECISIONS.json: 'd+c+' condensa dos hallazgos clínicos ('diuresis positiva y catarsis positiva'); el candidato FAISS solo capturaba el signo '+'."
+      },
+      {
+        id: "pr2-011",
+        reviewNumber: 13,
+        occurrenceId: "367a7b0af36425cb02c6a367",
+        surface: "Lab SC",
+        contextNote: "Estudios complementarios: referencia abreviada 'Lab SC'.",
+        faissCandidate: "425391000221107 | Laboratorio Celtyc SA",
+        faissScore: 0.7754,
+        mappingAction: "reject_candidate",
+        auditFlag: "undocumented_lexical_sense",
+        validatedSense: "Lab y SC requieren expansión contextual; no inferir nombre comercial de institución",
+        rationale: "Decisión #13 de REVIEW_DECISIONS.json: FAISS vinculó 'Lab SC' con una razón social farmacéutica ('Laboratorio Celtyc SA') de la extensión nacional. Se rechaza por inferencia institucional infundada."
+      },
+      {
+        id: "pr2-012",
+        reviewNumber: 14,
+        occurrenceId: "f3ad63f1339aef275b25e6d9",
+        surface: "LDL",
+        contextNote: "Endocrinología: mención de analito lipídico 'LDL'.",
+        faissCandidate: "259565004 | LDL, subfracción 1",
+        faissScore: 0.7213,
+        mappingAction: "reject_candidate",
+        auditFlag: "expansion_candidate_semantic_mismatch",
+        validatedSense: "lipoproteína de baja densidad (retirar subfracción 1 hiperespecífica)",
+        rationale: "Decisión #14 de REVIEW_DECISIONS.json: El candidato 'LDL, subfracción 1' introduce una especificidad bioquímica no respaldada por el texto clínico general."
+      },
+      {
+        id: "pr2-013",
+        reviewNumber: 15,
+        occurrenceId: "e47c67ecb7c86452790d1548",
+        surface: "no reactivo",
+        contextNote: "Resultado serológico literal registrado como 'no reactivo'.",
+        faissCandidate: "131194007 | no reactivo",
+        faissScore: 1.0000,
+        mappingAction: "retain_candidate_pending_ontology_validation",
+        auditFlag: "valid_candidate_pending_ontology",
+        validatedSense: "Expresión literal de resultado (no es abreviatura); candidato plausible sujeto a validación ontológica",
+        rationale: "Decisión #15/#16 de REVIEW_DECISIONS.json: Coincidencia léxica exacta (score 1.0) para un valor de resultado ('no reactivo', 131194007). Se retiene pendiente de validación ontológica y del estudio asociado."
+      },
+      {
+        id: "pr2-014",
+        reviewNumber: 17,
+        occurrenceId: "147f2d96ac057f15eb877a48",
+        surface: "PGE",
+        contextNote: "Sigla 'PGE' sin contexto desambiguador en la partición léxica.",
+        faissCandidate: "52091009 | PGE",
+        faissScore: 1.0000,
+        mappingAction: "withhold_mapping",
+        auditFlag: "undocumented_lexical_sense",
+        validatedSense: "Coincidencia literal PGE/PGE (score 1.0) no desambigua el significado clínico real",
+        rationale: "Decisión #17 de REVIEW_DECISIONS.json: Excelente lección metodológica del : un score coseno de 1.0000 entre dos siglas idénticas ('PGE' → 'PGE') NO resuelve la polisemia (¿prostaglandina E vs regular/peor estado general?)."
+      },
+      {
+        id: "pr2-015",
+        reviewNumber: 18,
+        occurrenceId: "4e75daabd407a42899d932e9",
+        surface: "PPL",
+        contextNote: "Semiología renoureteral: evaluación de 'PPL' en examen físico.",
+        faissCandidate: "148731000 | Lumbar puncture",
+        faissScore: 0.6925,
+        mappingAction: "reject_candidate",
+        auditFlag: "low_similarity_threshold",
+        validatedSense: "puñopercusión lumbar (retirar punción lumbar / Lumbar puncture)",
+        rationale: "Decisión #18/#19 de REVIEW_DECISIONS.json: Confundir 'puñopercusión lumbar' (maniobra semiológica no invasiva) con 'punción lumbar' (procedimiento invasivo) ilustra el peligro clínico de aceptar candidatos bajo umbral sin revisión humana."
+      },
+      {
+        id: "pr2-016",
+        reviewNumber: 20,
+        occurrenceId: "d2cd4188d92533b482a2176a",
+        surface: "predominio nocturno",
+        contextNote: "Caracterización semiológica de un síntoma con 'predominio nocturno'.",
+        faissCandidate: "2546009 | nocturno",
+        faissScore: 0.8188,
+        mappingAction: "retain_candidate_pending_ontology_validation",
+        auditFlag: "valid_candidate_pending_ontology",
+        validatedSense: "Conservar 'predominio nocturno' como modificador; 'nocturno' aislado pierde el matiz de predominio",
+        rationale: "Decisión #20 de REVIEW_DECISIONS.json: Se retiene como candidato pendiente de validación ontológica advirtiendo que el calificador 'nocturno' no captura por completo 'predominio nocturno'."
+      }
+    ];
+
+    // =========================================================================
+    // 2. OPCIONES Y DICCIONARIOS DE RESPUESTA POR MODO
+    // =========================================================================
+
+    SEMANTIC_CASES.forEach(item => {
+      item.mappingStatus = "Ejercicio adaptado";
+      item.caseId = "ejercicio-" + item.id;
+      item.annotator = "Escenario educativo adaptado";
+      item.start = item.text.toLowerCase().indexOf(item.literal.toLowerCase());
+      item.end = item.start < 0 ? -1 : item.start + item.literal.length;
+      if (item.start >= 0) item.literal = item.text.slice(item.start, item.end);
+    });
+    LEXICAL_CASES.forEach(item => {
+      item.status = "Ejercicio adaptado";
+      item.text = "SECCIÓN DIDÁCTICA: " + item.section + ". " + item.text;
+    });
+
+    const PUBLIC_REVIEW_DECISIONS = [{"reviewNumber": 1, "occurrenceId": "62d781d25033d9f33e5887f1", "surface": "(O2 3 LT)", "originalCandidate": {"sctid": "401955005", "term": "tubo de oxígeno, 300 litros", "score": 0.7001}, "lexicalChanges": {"expansion": "aporte de oxígeno a 3 litros", "senseId": "aporte de oxígeno a 3 litros", "function": "entity", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Separar oxigenoterapia y flujo. L/min requiere confirmación explícita; no se agrega denominador temporal a la fuente.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 2, "occurrenceId": "e1f9467dda5f29d1f03e494a", "surface": "++", "originalCandidate": {"sctid": "441517005", "term": "presente ++ sobre +++", "score": 0.7981}, "lexicalChanges": {"expansion": null, "senseId": null, "function": "modifier", "lexicalValidationStatus": "not_documented"}, "mappingAction": "withhold_mapping", "note": "Símbolo semicuantitativo; escala y elemento calificado desconocidos.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 3, "occurrenceId": "8d7d3ac79101b44f70404d40", "surface": "3L", "originalCandidate": {"sctid": "258775009", "term": "femtolitro", "score": 0.7084}, "lexicalChanges": {"expansion": "tres litros", "senseId": "tres litros", "function": "value", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Valor 3, unidad L. No inferir L/min sin confirmación explícita.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 4, "occurrenceId": "c463b41a87b3823d4b767725", "surface": "a/a", "originalCandidate": {"sctid": "224786002", "term": "medio ambiente al aire libre", "score": 0.8751}, "lexicalChanges": {"expansion": "aire ambiente", "senseId": "aire ambiente", "function": "entity", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Conservar sentido aire ambiente; respira aire ambiente solo si describe al paciente.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 5, "occurrenceId": "cbe61fc520ba0b99f98eb19c", "surface": "aci", "originalCandidate": {"sctid": "36021000221109", "term": "AUCIC", "score": 0.7262}, "lexicalChanges": {"expansion": null, "senseId": null, "lexicalValidationStatus": "not_documented"}, "mappingAction": "reject_candidate", "note": "Sentido desconocido; no expandir aci por similitud.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 6, "occurrenceId": "4354a615a67bb8b75e16826b", "surface": "ar", "originalCandidate": {"sctid": "257996005", "term": "r", "score": 0.7084}, "lexicalChanges": {"expansion": null, "senseId": null, "lexicalValidationStatus": "not_documented"}, "mappingAction": "reject_candidate", "note": "Sentido ambiguo; Clínica médica no permite desambiguar ar.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 7, "occurrenceId": "e6bfdc318b3e2a7221826ce7", "surface": "beta IM 3/3 mg", "originalCandidate": {"sctid": "234731000221106", "term": "MYVITLA [IXAZOMIB 3 MG] CAPSULA DURA por 3 UNIDADES", "score": 0.6204}, "lexicalChanges": {"expansion": "betametasona intramuscular, 3/3 mg", "senseId": "betametasona intramuscular, 3/3 mg", "function": "entity", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Capa humana registra betametasona. Presentación y significado de 3/3 no se infieren.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 8, "occurrenceId": "bc93a9db2b55b2905f6c2a3f", "surface": "beta IM 3/3 mg", "originalCandidate": {"sctid": "234731000221106", "term": "MYVITLA [IXAZOMIB 3 MG] CAPSULA DURA por 3 UNIDADES", "score": 0.6204}, "lexicalChanges": {"expansion": "betametasona intramuscular, 3/3 mg", "senseId": "betametasona intramuscular, 3/3 mg", "function": "entity", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Capa humana registra betametasona. Presentación y significado de 3/3 no se infieren.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 9, "occurrenceId": "6dbd7113ab4401aa910ca9fa", "surface": "Control en", "originalCandidate": {"sctid": "31509003", "term": "controlado", "score": 0.8593}, "lexicalChanges": {"expansion": "expresión de planificación de seguimiento", "senseId": "expresión de planificación de seguimiento", "function": "structural", "formType": "other", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "No es abreviatura; conservar expresión estructural pendiente de complemento, sin mapeo aislado.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 10, "occurrenceId": "dea510267511c7c63f2df8b7", "surface": "cvc", "originalCandidate": {"sctid": "230690007", "term": "ACV", "score": 0.7547}, "lexicalChanges": {"expansion": null, "senseId": null, "function": "entity", "lexicalValidationStatus": "not_documented"}, "mappingAction": "reject_candidate", "note": "Orientación semántica: evaluación del campo visual en Oftalmología. Expansión exacta de CVC pendiente.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 11, "occurrenceId": "dab91de12f90cb6617d86605", "surface": "d+c+", "originalCandidate": {"sctid": "260347006", "term": "presente + de ++++", "score": 0.7567}, "lexicalChanges": {"expansion": "diuresis y catarsis presentes", "senseId": "diuresis y catarsis presentes", "function": "result", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Propuesta aceptada por responsable: separar diuresis y catarsis con atributos; sin SCTID nuevo.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 12, "occurrenceId": "28ffd141fa4b0ac2e6946cd6", "surface": "EPI", "originalCandidate": {"sctid": "5821000221100", "term": "EXPIT", "score": 0.6702}, "lexicalChanges": {"expansion": null, "senseId": null, "lexicalValidationStatus": "not_documented"}, "mappingAction": "reject_candidate", "note": "Conservar sigla EPI con sentido pendiente, sin EXPIT.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 13, "occurrenceId": "367a7b0af36425cb02c6a367", "surface": "Lab SC", "originalCandidate": {"sctid": "425391000221107", "term": "Laboratorio Celtyc SA", "score": 0.7754}, "lexicalChanges": {"expansion": null, "senseId": null, "lexicalValidationStatus": "not_documented"}, "mappingAction": "reject_candidate", "note": "Lab y SC requieren expansión contextual; no inferir institución.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 14, "occurrenceId": "f3ad63f1339aef275b25e6d9", "surface": "LDL", "originalCandidate": {"sctid": "259565004", "term": "LDL, subfracción 1", "score": 0.7213}, "lexicalChanges": {"expansion": "lipoproteína de baja densidad", "senseId": "lipoproteína de baja densidad", "function": "modifier", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Retirar subfracción 1. Distinguir lipoproteína, colesterol LDL y medición según contexto.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 15, "occurrenceId": "e47c67ecb7c86452790d1548", "surface": "no reactivo", "originalCandidate": {"sctid": "131194007", "term": "no reactivo", "score": 1.0}, "lexicalChanges": {"expansion": null, "senseId": null, "formType": "other", "function": "result", "lexicalValidationStatus": "not_applicable"}, "mappingAction": "retain_candidate_pending_ontology_validation", "note": "Expresión literal de resultado, no abreviatura. Candidato plausible; SCTID y prueba pendientes.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 16, "occurrenceId": "e555f899efc864d053f17390", "surface": "no reactivo", "originalCandidate": {"sctid": "131194007", "term": "no reactivo", "score": 1.0}, "lexicalChanges": {"expansion": null, "senseId": null, "formType": "other", "function": "result", "lexicalValidationStatus": "not_applicable"}, "mappingAction": "retain_candidate_pending_ontology_validation", "note": "Expresión literal de resultado, no abreviatura. Candidato plausible; SCTID y prueba pendientes.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 17, "occurrenceId": "147f2d96ac057f15eb877a48", "surface": "PGE", "originalCandidate": {"sctid": "52091009", "term": "PGE", "score": 1.0}, "lexicalChanges": {"expansion": null, "senseId": null, "lexicalValidationStatus": "not_documented"}, "mappingAction": "withhold_mapping", "note": "Coincidencia PGE/PGE no desambigua el significado; expansión pendiente.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 18, "occurrenceId": "4e75daabd407a42899d932e9", "surface": "PPL", "originalCandidate": {"sctid": "148731000", "term": "Lumbar puncture", "score": 0.6925}, "lexicalChanges": {"expansion": "puñopercusión lumbar", "senseId": "puñopercusión lumbar", "function": "entity", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Retirar punción lumbar. Distinguir maniobra y resultado antes de asignar concepto.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 19, "occurrenceId": "978eef2f856993ae5f2f4229", "surface": "PPL", "originalCandidate": {"sctid": "148731000", "term": "Lumbar puncture", "score": 0.6925}, "lexicalChanges": {"expansion": "puñopercusión lumbar", "senseId": "puñopercusión lumbar", "function": "entity", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Retirar punción lumbar. Distinguir maniobra y resultado antes de asignar concepto.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 20, "occurrenceId": "d2cd4188d92533b482a2176a", "surface": "predominio nocturno", "originalCandidate": {"sctid": "2546009", "term": "nocturno", "score": 0.8188}, "lexicalChanges": {"expansion": null, "senseId": null, "function": "modifier", "formType": "other", "lexicalValidationStatus": "not_applicable"}, "mappingAction": "retain_candidate_pending_ontology_validation", "note": "Conservar predominio nocturno como modificador; nocturno no representa por sí solo predominio.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}, {"reviewNumber": 21, "occurrenceId": "1e98c8148300f6e84e453b24", "surface": "R3 R4 -", "originalCandidate": {"sctid": "274819007", "term": "reflejo tricipital, ausente", "score": 0.6538}, "lexicalChanges": {"expansion": "tercer y cuarto ruidos cardíacos ausentes", "senseId": "tercer y cuarto ruidos cardíacos ausentes", "function": "result", "lexicalValidationStatus": "proposal_accepted_by_project_responsible"}, "mappingAction": "reject_candidate", "note": "Separar R3 y R4 ausentes. Revisar capa humana ruidos cardíacos anormales/Activo; sin vínculo documental no se cambia automáticamente esa fila.", "approvalStatus": "accepted_by_project_responsible", "ontologyValidationStatus": "not_performed"}];
+    AUDIT_PR2_CASES.forEach(item => {
+      const source = PUBLIC_REVIEW_DECISIONS.find(r => r.occurrenceId === item.occurrenceId);
+      if (!source) throw new Error("Revisión sin fuente pública");
+      item.reviewNumber = source.reviewNumber;
+      item.mappingAction = source.mappingAction;
+      item.validatedSense = source.lexicalChanges.expansion || "Sin expansión consignada; consultar limitaciones de la revisión";
+      item.contextNote = "Registro público de revisión del . No se dispone de la nota fuente; no inferir contexto clínico.";
+      item.rationale = source.note + " Aceptación del responsable; validación ontológica independiente no realizada. El motivo de opción múltiple es una clasificación didáctica.";
+      item.faissCandidate = source.originalCandidate.sctid + " | " + source.originalCandidate.term;
+      item.faissScore = source.originalCandidate.score;
+    });
+
+    const SEMANTIC_CHOICE_BANK = {"editionUri":"http://snomed.info/sct/11000221109/version/20260520","cases":{"demo-001":{"reference":{"sctid":"448225001","term":"saturación de oxígeno normal"},"distractors":[{"sctid":"449171008","term":"saturación de oxígeno por debajo del rango de referencia","reason":"95% se describe dentro de rango, no por debajo."},{"sctid":"1351951002","term":"saturación de oxígeno por encima del rango de referencia","reason":"No documenta saturación aumentada."},{"sctid":"389087006","term":"hipoxemia","reason":"No documenta oxigenación sanguínea anormalmente baja."}]},"demo-002":{"reference":{"sctid":"1258985005","term":"ventilación mecánica invasiva"},"distractors":[{"sctid":"428311008","term":"VNI - ventilación no invasiva","reason":"El escenario adaptado documenta intubación y ventilación invasiva; la ventilación no invasiva utiliza una interfaz externa."},{"sctid":"1259025002","term":"terapia con oxígeno nasal de alto flujo","reason":"Aporte de oxígeno no equivale a ventilación mecánica invasiva."},{"sctid":"425696007","term":"asistencia respiratoria manual con bolsa y máscara","reason":"La nota dice conectado a ventilador, no ventilación manual."}]},"demo-003":{"reference":{"sctid":"40648001","term":"producto que contiene fentanilo"},"distractors":[{"sctid":"73572009","term":"producto que contiene morfina","reason":"Opioide distinto de fentanilo."},{"sctid":"108379008","term":"producto que contiene remifentanilo","reason":"Opioide distinto de fentanilo."},{"sctid":"370275005","term":"producto con sufentanilo","reason":"Opioide distinto de fentanilo."}]},"demo-004":{"reference":{"sctid":"430679000","term":"antecedente familiar de diabetes mellitus tipo 2"},"distractors":[{"sctid":"430678008","term":"antecedente familiar de diabetes mellitus tipo 1","reason":"El tipo familiar explícito es 2."},{"sctid":"472969004","term":"antecedente de diabetes mellitus tipo 2","reason":"Se refiere a familiares, no al paciente."},{"sctid":"160402005","term":"antecedente familiar de diabetes gestacional","reason":"No se documenta diabetes gestacional familiar."}]},"demo-005":{"reference":{"sctid":"29857009","term":"dolor de pecho"},"distractors":[{"sctid":"2237002","term":"dolor pleural","reason":"El literal no atribuye relación respiratoria."},{"sctid":"102588006","term":"dolor de la pared torácica","reason":"No identifica origen en pared torácica."},{"sctid":"71884009","term":"dolor precordial","reason":"No delimita la región precordial."}]},"demo-006":{"reference":{"sctid":"68566005","term":"enfermedad infecciosa de las vías urinarias"},"distractors":[{"sctid":"36689008","term":"pielonefritis aguda","reason":"No documenta afectación renal."},{"sctid":"31822004","term":"inflamación de la uretra","reason":"No identifica inflamación uretral."},{"sctid":"720406004","term":"bacteriuria asintomática","reason":"No documenta resultado de cultivo ni ausencia de síntomas."}]},"corpus-007":{"reference":{"sctid":"386661006","term":"fiebre"},"distractors":[{"sctid":"386689009","term":"hipotermia","reason":"Afebril no implica temperatura baja."},{"sctid":"43724002","term":"escalofríos","reason":"No es el concepto negado por afebril."},{"sctid":"42984000","term":"sudor nocturno","reason":"No es el concepto negado por afebril."}]},"corpus-008":{"reference":{"sctid":"43478001","term":"dolor abdominal a la palpación"},"distractors":[{"sctid":"35611005","term":"dolor a la descompresión","reason":"No documenta maniobra de descompresión."},{"sctid":"249545003","term":"defensa abdominal","reason":"No es el dolor a la palpación negado."},{"sctid":"72300008","term":"rigidez abdominal","reason":"No es el dolor a la palpación negado."}]},"corpus-009":{"reference":{"sctid":"57485005","term":"terapia por oxígeno"},"distractors":[{"sctid":"1259025002","term":"terapia con oxígeno nasal de alto flujo","reason":"3 litros por cánula convencional no documentan alto flujo."},{"sctid":"1258985005","term":"ventilación mecánica invasiva","reason":"No documenta intubación ni ventilador."},{"sctid":"18678000","term":"oxigenación hiperbárica","reason":"No documenta cámara hiperbárica."}]},"corpus-010":{"reference":{"sctid":"194828000","term":"síndrome anginoso"},"distractors":[{"sctid":"57054005","term":"IAM","reason":"Angor no equivale a necrosis miocárdica."},{"sctid":"3238004","term":"pericarditis","reason":"Angor no designa inflamación pericárdica."},{"sctid":"281245003","term":"dolor de pecho musculoesquelético","reason":"Angor no designa dolor musculoesquelético."}]},"corpus-011":{"reference":{"sctid":"289260002","term":"hernia epigástrica"},"distractors":[{"sctid":"396347007","term":"hernia umbilical","reason":"Ubicación distinta del epigastrio."},{"sctid":"396232000","term":"hernia inguinal","reason":"Ubicación distinta del epigastrio."},{"sctid":"236037000","term":"hernia por incisión","reason":"No documenta defecto sobre incisión quirúrgica."}]},"corpus-012":{"reference":{"sctid":"408991007","term":"enseñanza de puericultura"},"distractors":[{"sctid":"171044003","term":"educación sobre inmunización","reason":"Puericultura no identifica asesoramiento específico de vacunación."},{"sctid":"967006","term":"educación sobre medicación","reason":"No documenta educación farmacológica."},{"sctid":"58707002","term":"instrucción sobre la higiene bucal","reason":"No documenta educación odontológica."}]},"corpus-013":{"reference":{"sctid":"27658006","term":"producto que contiene amoxicilina"},"distractors":[{"sctid":"31087008","term":"producto que contiene ampicilina","reason":"Aminopenicilina distinta."},{"sctid":"734844004","term":"producto con amoxicilina y ácido clavulánico","reason":"No documenta asociación con clavulanato."},{"sctid":"54887004","term":"producto que contiene cefalexina","reason":"Antibiótico distinto."}]},"corpus-014":{"reference":{"sctid":"223413005","term":"asesoramiento acerca de signos y síntomas"},"distractors":[{"sctid":"967006","term":"educación sobre medicación","reason":"El literal identifica signos de alarma, no medicación."},{"sctid":"63994009","term":"educación sobre profilaxis de las infecciones","reason":"No identifica prevención de infección."},{"sctid":"61310001","term":"educación para la salud - nutrición","reason":"No identifica recomendaciones nutricionales."}]},"corpus-015":{"reference":{"sctid":"230690007","term":"ACV"},"distractors":[{"sctid":"266257000","term":"ataque isquémico transitorio","reason":"No equivale al ACV documentado."},{"sctid":"274100004","term":"hemorragia intracerebral","reason":"La nota especifica ACV isquémico."},{"sctid":"21454007","term":"hemorragia subaracnoidea intracraneal","reason":"La nota especifica ACV isquémico."}]},"corpus-016":{"reference":{"sctid":"1187106001","term":"ultrasonografía Doppler"},"distractors":[{"sctid":"4970003","term":"venografía","reason":"Estudio venoso con contraste, no ecografía Doppler."},{"sctid":"418272005","term":"angiotomografía con contraste","reason":"Modalidad distinta de ultrasonido."},{"sctid":"431508007","term":"angiografía de vaso sanguíneo [como un todo] por RM","reason":"Modalidad distinta de ultrasonido."}]},"corpus-017":{"reference":{"sctid":"90302003","term":"tuberculosis de las meninges cerebrales"},"distractors":[{"sctid":"192644005","term":"meningitis epidémica","reason":"Etiología meningocócica distinta de tuberculosis."},{"sctid":"58170007","term":"meningitis viral","reason":"Etiología distinta."},{"sctid":"154283005","term":"tuberculosis pulmonar","reason":"Localización distinta de meninges."}]},"corpus-018":{"reference":{"sctid":"96034006","term":"producto que contiene azitromicina"},"distractors":[{"sctid":"83999008","term":"producto que contiene claritromicina","reason":"Macrólido distinto."},{"sctid":"30427009","term":"producto que contiene eritromicina","reason":"Macrólido distinto."},{"sctid":"713769006","term":"producto que contiene roxitromicina","reason":"Macrólido distinto."}]},"corpus-019":{"reference":{"sctid":"250570001","term":"evaluación del equilibrio ácido-base"},"distractors":[{"sctid":"3926003","term":"medición de lactato","reason":"Lactato se informa por separado; no equivale a EAB."},{"sctid":"312474003","term":"determinación de niveles de electrólitos en sangre","reason":"Ionograma se informa por separado."},{"sctid":"312471006","term":"determinación de nivel de bicarbonato en sangre","reason":"Un componente aislado no equivale al panel EAB."}]},"corpus-020":{"reference":{"sctid":"35611005","term":"dolor a la descompresión"},"distractors":[{"sctid":"249545003","term":"defensa abdominal","reason":"No equivale a dolor de rebote negado."},{"sctid":"72300008","term":"rigidez abdominal","reason":"No equivale a dolor de rebote negado."},{"sctid":"43478001","term":"dolor abdominal a la palpación","reason":"Palpación directa no equivale a rebote; está presente en otra parte de nota."}]},"corpus-021":{"reference":{"sctid":"765473008","term":"resección de riñón derecho"},"distractors":[{"sctid":"765472003","term":"nefrectomía izquierda","reason":"Lado opuesto."},{"sctid":"1866009","term":"nefrectomía total de ambos riñones","reason":"No documenta extirpación de ambos riñones."},{"sctid":"39834009","term":"inserción de tubo de nefrostomía","reason":"Drenaje renal, no extirpación."}]},"corpus-022":{"reference":{"sctid":"112828007","term":"injerto en puente de arteria femoral a arteria poplítea"},"distractors":[{"sctid":"405482000","term":"puente aortofemoral","reason":"Trayecto anatómico distinto."},{"sctid":"15853003","term":"tromboendarterectomía con injerto de arterias femoral y poplítea","reason":"Endarterectomía no equivale a bypass documentado."},{"sctid":"233281008","term":"angioplastia de la arteria femoral común","reason":"Dilatación endovascular, no injerto-puente."}]},"corpus-023":{"reference":{"sctid":"128477000","term":"absceso"},"distractors":[{"sctid":"123951002","term":"celulitis cutánea","reason":"Infección difusa; alternativa diferencial no literal FLEMON."},{"sctid":"19471005","term":"linfadenitis","reason":"Afectación ganglionar no documentada en literal."},{"sctid":"42982001","term":"sialoadenitis","reason":"Afectación glandular no documentada en literal."}]},"corpus-024":{"reference":{"sctid":"40070004","term":"infección por molusco contagioso"},"distractors":[{"sctid":"57019003","term":"verruga simple","reason":"Lesión viral distinta de molusco."},{"sctid":"13600006","term":"foliculitis","reason":"Alternativa diferencial, no el literal seleccionado."},{"sctid":"240542006","term":"verrugas anogenitales","reason":"Lesión distinta; localización inguinal no basta para identificarla."}]}}};
+
+    [...SEMANTIC_CASES, ...LEXICAL_CASES, ...AUDIT_PR2_CASES].forEach(item => {
+      item.rationale = item.rationale.replace(/(?:REVIEW_DECISIONS\.json|AUDITORIA_Y_CAMBIOS\.md|lexical_inventory\.jsonl|LEXICAL_INVENTORY\.JSONL)/g, "la revisión documentada");
+    });
+    const SEMANTIC_OPTIONS = {
+      cat: ["Hallazgo clínico", "Procedimiento", "Fármaco"],
+      pol: ["Activo", "Negado"],
+      cert: ["Confirmado", "Sospecha", "Diferencial"],
+      temp: ["Actual", "Histórico"],
+      suj: ["Paciente", "Familiar"]
+    };
+
+    const LEXICAL_OPTIONS = {
+      formType: [
+        { code: "abbreviation", label: "Abreviatura" },
+        { code: "initialism", label: "Sigla / Inicialismo" },
+        { code: "acronym", label: "Acrónimo pronunciable" },
+        { code: "alphanumeric", label: "Forma alfanumérica" },
+        { code: "symbolic_abbreviation", label: "Abreviatura simbólica" }
+      ],
+      function: [
+        { code: "entity", label: "Entidad clínica" },
+        { code: "result", label: "Resultado" },
+        { code: "value", label: "Valor / Medida" },
+        { code: "modifier", label: "Modificador" },
+        { code: "header", label: "Encabezado" }
+      ],
+      section: [
+        "signos vitales",
+        "examen físico",
+        "evolución",
+        "medicación o tratamiento",
+        "estudios o resultados"
+      ]
+    };
+
+    const AUDIT_OPTIONS = {
+      mappingAction: [
+        { code: "reject_candidate", label: "Rechazar el candidato" },
+        { code: "retain_candidate_pending_ontology_validation", label: "Retener para revisar el concepto" },
+        { code: "withhold_mapping", label: "Dejar sin asignar un concepto" }
+      ],
+      auditFlag: [
+        { code: "expansion_candidate_semantic_mismatch", label: "El candidato no corresponde al significado" },
+        { code: "low_similarity_threshold", label: "Candidato bajo umbral (< 0,70) con error de dominio" },
+        { code: "undocumented_lexical_sense", label: "Sentido léxico ambiguo / no documentado o colisión de sigla" },
+        { code: "valid_candidate_pending_ontology", label: "Expresión no abreviada plausible pendiente de validación" }
+      ]
+    };
+
+    // =========================================================================
+    // 3. MOTOR DE SONIDO 8-BIT (WEB AUDIO API PURO)
+    // =========================================================================
+    let sfxEnabled = true;
+    let crtEnabled = true;
+    let audioCtx = null;
+
+    function playTone(freq, type = "square", duration = 0.09, delay = 0, vol = 0.06) {
+      if (!sfxEnabled) return;
+      try {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContextClass();
+        }
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + duration);
+      } catch (e) {}
+    }
+
+    function sfxClick() { playTone(520, "square", 0.04, 0, 0.04); }
+    function sfxStart() {
+      playTone(330, "square", 0.07, 0, 0.06);
+      playTone(440, "square", 0.07, 0.07, 0.06);
+      playTone(660, "square", 0.12, 0.14, 0.07);
+    }
+    function sfxCorrect() {
+      playTone(523.25, "square", 0.08, 0, 0.06);
+      playTone(659.25, "square", 0.08, 0.08, 0.06);
+      playTone(783.99, "square", 0.14, 0.16, 0.07);
+    }
+    function sfxWrong() {
+      playTone(220, "sawtooth", 0.12, 0, 0.07);
+      playTone(155, "sawtooth", 0.20, 0.11, 0.07);
+    }
+    function sfxHint() {
+      playTone(587.33, "triangle", 0.09, 0, 0.06);
+      playTone(880, "triangle", 0.12, 0.09, 0.06);
+    }
+
+    // =========================================================================
+    // 4. ESTADO DEL JUEGO Y PERSISTENCIA (COMPATIBLE CON semantiar_retro_educational_stats_v3)
+    // =========================================================================
+    let gameState = {
+      view: "menu",
+      mode: "semantic", // "semantic" | "lexical" | "audit"
+      difficulty: "all", // "all" | "facil" | "normal" | "dificil"
+      roundLength: 10,
+      timerEnabled: false,
+      timeLeft: 45,
+      timerInterval: null,
+      roundItems: [],
+      currentIndex: 0,
+      currentAnswers: {},
+      confirmed: false,
+      hintUsed: false,
+      roundScore: 0,
+      roundMaxScore: 0,
+      streak: 0,
+      bestRoundStreak: 0,
+      lives: 3,
+      history: [], roundId: "", saved: false, hints: 0, roundConfig: null, timerInitialized: false
+    };
+
+
+    function loadStats() { return Scoreboard.load(); }
+    function saveStats(addedScore, addedMax, bestStreakInRound) {
+      if (gameState.saved || !gameState.roundId || gameState.history.length !== gameState.roundItems.length) return;
+      Scoreboard.record({id:gameState.roundId,...gameState.roundConfig,score:addedScore,maxScore:addedMax,hints:gameState.hints},bestStreakInRound);
+      gameState.saved = true;
+      renderStatsPanel();
+      renderLeaderboard();
+    }
+    function resetStats() {
+      document.getElementById("resetConfirm").hidden = false;
+    }
+    function confirmResetStats() {
+      Scoreboard.reset();
+      document.getElementById("resetConfirm").hidden = true;
+      renderStatsPanel(); renderLeaderboard();
+    }
+    function renderLeaderboard() {
+      const config = gameState.view === "play" && gameState.roundConfig && gameState.roundItems.length ? {...gameState.roundConfig,hints:gameState.hints} :
+        {mode:gameState.mode,difficulty:gameState.mode === "semantic" ? gameState.difficulty : "all",timer:gameState.timerEnabled,cases:Math.min(getFilteredPool().length,gameState.roundLength),hints:0};
+      const rows = Scoreboard.rank(config);
+      const labels={semantic:"Semántica 6D",lexical:"Capa léxica",audit:"Revisión de candidatos"};
+      const difficulties = {all:"Todos",facil:"Fácil",normal:"Normal",dificil:"Difícil"};
+      document.getElementById("rankingRules").textContent = labels[config.mode]+" · "+difficulties[config.difficulty]+" · "+config.cases+" casos · "+(config.timer ? "45 s" : "libre")+" · "+config.hints+" pistas";
+      document.getElementById("rankingList").innerHTML = rows.length ? rows.map((e,i) =>
+        '<li>'+ (i+1) +'. '+e.score+' / '+e.maxScore+' puntos'+(e.id === gameState.roundId ? ' · esta partida' : '')+'</li>').join("") : '<li>Todavía no hay partidas completas con estas reglas.</li>';
+      document.getElementById("hudBest").textContent = rows.length ? rows[0].score+" / "+rows[0].maxScore : "Sin récord";
+      document.getElementById("storageStatus").textContent = Scoreboard.isPersistent() ? "Guardado local en este navegador. Se conservan hasta 200 partidas; clasificación: mejores 10 con las mismas reglas." : "Almacenamiento no disponible: los resultados se conservan solo durante esta sesión.";
+    }
+
+    function renderStatsPanel() {
+      const stats = loadStats();
+      const rounds = stats.roundsPlayed || 0;
+      const total = stats.totalScore || 0;
+      const max = stats.maxScore || 0;
+      
+      const streak = stats.bestStreak || 0;
+      const acc = max > 0 ? Math.round((total / max) * 100) : 0;
+
+      document.getElementById("statRounds").textContent = String(rounds);
+      document.getElementById("statTotalScore").textContent = `${total} / ${max}`;
+      document.getElementById("statGlobalAcc").textContent = `${acc}%`;
+      document.getElementById("statBestStreak").textContent = `x${streak}`;
+      renderLeaderboard();
+
+      const badgesEl = document.getElementById("badgesContainer");
+      const badges = [
+        { id: "impecable", icon: "🏆", name: "Anotador Impecable (≥90%)", unlocked: acc >= 90 && rounds > 0 },
+        { id: "snomed", icon: "🏔️", name: "Práctica terminológica", unlocked: total >= 30 },
+        { id: "ojo", icon: "👁️", name: "Ojo Clínico Rioplatense", unlocked: rounds >= 1 },
+        { id: "racha", icon: "⚡", name: "Racha Dorada (≥3 Perfectos)", unlocked: streak >= 3 },
+        { id: "pr2", icon: "🛡️", name: "Auditor  (FAISS Guard)", unlocked: rounds >= 2 }
+      ];
+      badgesEl.innerHTML = badges.map(b => `
+        <span class="badge-chip ${b.unlocked ? 'amber' : ''}" style="opacity:${b.unlocked ? '1' : '0.45'}">
+          ${b.icon} ${b.name} ${b.unlocked ? '✓' : '🔒'}
+        </span>
+      `).join("");
+    }
+
+    // =========================================================================
+    // 5. CONFIGURACIÓN DE HARDWARE, VISTAS Y FILTROS
+    // =========================================================================
+    function setTheme(theme) {
+      sfxClick();
+      document.body.setAttribute("data-theme", theme);
+      ["Green", "Amber", "Cyan", "HC"].forEach(k => {
+        const el = document.getElementById("btnTheme" + k);
+        if (el) el.classList.remove("active");
+      });
+      const map = { "green": "btnThemeGreen", "amber": "btnThemeAmber", "cyan": "btnThemeCyan", "high-contrast": "btnThemeHC" };
+      if (map[theme]) document.getElementById(map[theme]).classList.add("active");
+    }
+
+    function toggleCRT() {
+      sfxClick();
+      crtEnabled = !crtEnabled;
+      const screen = document.getElementById("crtScreen");
+      const btn = document.getElementById("btnCrtToggle");
+      if (crtEnabled) {
+        screen.classList.add("crt-fx");
+        btn.classList.add("active");
+        btn.textContent = "📺 CRT Scanlines: ON";
+      } else {
+        screen.classList.remove("crt-fx");
+        btn.classList.remove("active");
+        btn.textContent = "📺 CRT Scanlines: OFF";
+      }
+    }
+
+    function toggleSFX() {
+      sfxEnabled = !sfxEnabled;
+      const btn = document.getElementById("btnSfxToggle");
+      if (sfxEnabled) {
+        btn.classList.add("active");
+        btn.textContent = "🔊 SFX 8-Bit: ON";
+        sfxClick();
+      } else {
+        btn.classList.remove("active");
+        btn.textContent = "🔇 SFX 8-Bit: OFF";
+      }
+    }
+
+    function switchView(view) {
+      sfxClick();
+      clearInterval(gameState.timerInterval);
+      gameState.view = view;
+      if (view === "play" && gameState.roundItems[gameState.currentIndex] && !gameState.confirmed) startQuestionTimer();
+      ["Menu", "Play", "Codex"].forEach(v => {
+        const sec = document.getElementById("view" + v);
+        const tab = document.getElementById("tab" + v);
+        if (sec) sec.classList.toggle("hidden", v.toLowerCase() !== view);
+        if (tab) tab.classList.toggle("active", v.toLowerCase() !== view ? false : true);
+      });
+      if (view === "codex") renderCodexTable();
+      if (view === "play") renderCurrentQuestion();
+      if (view !== "play") renderLeaderboard();
+      syncAccessibility();
+      updateHUD();
+    }
+
+    function selectGameMode(mode) {
+      sfxClick();
+      if (gameState.mode !== mode) { clearInterval(gameState.timerInterval); gameState.roundItems = []; gameState.roundConfig = null; gameState.currentIndex = 0; gameState.confirmed = false; gameState.roundScore = 0; gameState.roundMaxScore = 0; gameState.streak = 0; gameState.lives = 3; }
+      gameState.mode = mode;
+      const labels = {
+        semantic: "1P · SEMÁNTICA 6D",
+        lexical: "1P · CAPA LÉXICA v2",
+        audit: "1P · AUDITORÍA "
+      };
+      document.getElementById("hudMode").textContent = labels[mode];
+      document.getElementById("selectedModeLabel").textContent = "Modo seleccionado: " + labels[mode];
+      updateFilteredPoolCount(); updateHUD(); renderLeaderboard();
+    }
+
+    function setDifficulty(diff) {
+      sfxClick();
+      gameState.difficulty = diff;
+      ["all", "facil", "normal", "dificil"].forEach(d => {
+        const btn = document.getElementById("diff_" + d);
+        if (btn) btn.classList.toggle("selected", d === diff);
+      });
+      updateFilteredPoolCount(); renderLeaderboard();
+    }
+
+    function setRoundLength(len) {
+      sfxClick();
+      gameState.roundLength = len;
+      [5, 10, 15].forEach(n => {
+        const btn = document.getElementById("len_" + n);
+        if (btn) btn.classList.toggle("selected", n === len);
+      });
+      updateFilteredPoolCount(); renderLeaderboard();
+    }
+
+    function toggleTimerMode() {
+      sfxClick();
+      gameState.timerEnabled = !gameState.timerEnabled;
+      const btn = document.getElementById("timerToggleBtn");
+      btn.classList.toggle("selected", gameState.timerEnabled);
+      btn.textContent = gameState.timerEnabled ? "⏱️ Reloj: 45s Arcade" : "⏱️ Reloj: Libre";
+      renderLeaderboard();
+    }
+
+    function getFilteredPool() {
+      let pool = [];
+      if (gameState.mode === "semantic") {
+        pool = SEMANTIC_CASES.slice();
+        if (gameState.difficulty !== "all") {
+          pool = pool.filter(item => {
+            const len = (item.text || "").length;
+            if (gameState.difficulty === "facil") return len < 130;
+            if (gameState.difficulty === "normal") return len >= 130 && len <= 250;
+            return len > 250;
+          });
+        }
+      } else if (gameState.mode === "lexical") {
+        pool = LEXICAL_CASES.slice();
+      } else {
+        pool = AUDIT_PR2_CASES.slice();
+      }
+      return pool;
+    }
+
+    function updateFilteredPoolCount() {
+      const pool = getFilteredPool();
+      const el = document.getElementById("filteredCountInfo");
+      if (el) {
+        el.innerHTML = `Casos disponibles en este filtro: <strong>${pool.length}</strong> (Ronda de hasta ${Math.min(pool.length, gameState.roundLength)} casos)`;
+      }
+      const badge = document.getElementById("datasetCounterBadge");
+      if (badge) {
+        badge.textContent = `Banco cargado: ${SEMANTIC_CASES.length} casos 6D + ${LEXICAL_CASES.length} casos Léxicos v2 + ${AUDIT_PR2_CASES.length} casos Auditoría `;
+      }
+    }
+
+    // =========================================================================
+    // 6. INICIO Y FLUJO DE PARTIDA
+    // =========================================================================
+    function shuffleArray(arr) {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startNewRound() {
+      sfxStart();
+      let pool = getFilteredPool();
+      if (pool.length === 0) { announce("No hay ejercicios para este filtro."); return; }
+      const shuffled = shuffleArray(pool);
+      gameState.roundItems = shuffled.slice(0, Math.min(gameState.roundLength, shuffled.length));
+      gameState.currentIndex = 0;
+      gameState.currentAnswers = {};
+      gameState.confirmed = false;
+      gameState.hintUsed = false;
+      gameState.roundScore = 0;
+      gameState.roundMaxScore = 0;
+      gameState.streak = 0;
+      gameState.bestRoundStreak = 0;
+      gameState.lives = 3;
+      gameState.history = [];
+      gameState.saved = false; gameState.hints = 0;
+      gameState.roundId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
+      gameState.roundConfig = {mode:gameState.mode,difficulty:gameState.mode === "semantic" ? gameState.difficulty : "all",timer:gameState.timerEnabled,cases:gameState.roundItems.length};
+      gameState.timerInitialized = false;
+
+      // Precompute multiple-choice options for each item so they don't reshuffle on click
+      gameState.roundItems.forEach(item => {
+        if (gameState.mode === "semantic") {
+          const prepared = SEMANTIC_CHOICE_BANK.cases[item.id];
+          if (!prepared || prepared.reference.sctid !== item.sctid || prepared.distractors.length !== 3) {
+            throw new Error("No hay opciones verificadas para este ejercicio");
+          }
+          item._termChoices = shuffleArray([
+            {sctid: item.sctid, term: item.term},
+            ...prepared.distractors.map(choice => ({...choice}))
+          ]);
+        } else if (gameState.mode === "lexical") {
+          const otherExps = LEXICAL_CASES
+            .filter(c => c.expansion !== item.expansion)
+            .map(c => c.expansion);
+          const uniqueExps = [...new Set(shuffleArray(otherExps))].slice(0, 3);
+          item._expChoices = shuffleArray([item.expansion, ...uniqueExps]);
+        } else if (gameState.mode === "audit") {
+          const otherSenses = AUDIT_PR2_CASES
+            .filter(c => c.validatedSense !== item.validatedSense)
+            .map(c => c.validatedSense);
+          const uniqueSenses = [...new Set(shuffleArray(otherSenses))].slice(0, 3);
+          item._senseChoices = shuffleArray([item.validatedSense, ...uniqueSenses]);
+        }
+      });
+
+      switchView("play");
+      startQuestionTimer();
+      renderCurrentQuestion();
+      updateHUD();
+      focusCase();
+    }
+
+    function startQuestionTimer() {
+      clearInterval(gameState.timerInterval);
+      if (!(gameState.roundConfig?.timer ?? gameState.timerEnabled) || !gameState.roundItems[gameState.currentIndex]) return;
+      if (!gameState.timerInitialized) { gameState.timeLeft = 45; gameState.timerInitialized = true; }
+      gameState.timerInterval = setInterval(() => {
+        if (gameState.confirmed || gameState.view !== "play" || document.hidden) return;
+        gameState.timeLeft--;
+        const timerBadge = document.getElementById("timerLiveBadge");
+        if (timerBadge) {
+          timerBadge.textContent = `⏱️ ${gameState.timeLeft}s`;
+          if (gameState.timeLeft <= 10) timerBadge.classList.add("danger");
+        }
+        if (gameState.timeLeft <= 0) {
+          clearInterval(gameState.timerInterval);
+          confirmCurrentAnswers(true);
+        }
+      }, 1000);
+    }
+
+    function updateHUD() {
+      const total = gameState.roundItems.length;
+      const idx = Math.min(gameState.currentIndex + 1, total);
+      document.getElementById("hudScore").textContent = `${String(gameState.roundScore).padStart(4, "0")} · x${gameState.streak}`;
+      document.getElementById("hudProgress").textContent = total ? `CASO ${idx} / ${total}` : "STANDBY";
+      const hearts = "♥".repeat(Math.max(0, gameState.lives)) + "♡".repeat(Math.max(0, 3 - gameState.lives));
+      const acc = gameState.roundMaxScore > 0 ? Math.round((gameState.roundScore / gameState.roundMaxScore) * 100) + "%" : "—";
+      document.getElementById("hudLives").textContent = `${hearts} (${acc})`;
+      renderLeaderboard();
+      const mobile = document.getElementById("mobileScore");
+      mobile.hidden = gameState.view !== "play";
+      mobile.textContent = `Puntos: ${gameState.roundScore} · Récord: ${document.getElementById("hudBest").textContent} · Caso ${idx}/${total}`;
+      document.body.dataset.view = gameState.view;
+    }
+
+    function highlightLiteral(text, literal) {
+      text = String(text ?? ""); literal = String(literal ?? "");
+      const idx = literal ? text.toLowerCase().indexOf(literal.toLowerCase()) : -1;
+      if (idx < 0) return escapeHtml(text);
+      return escapeHtml(text.slice(0, idx)) + '<mark class="span-highlight">' +
+        escapeHtml(text.slice(idx, idx + literal.length)) + '</mark>' + escapeHtml(text.slice(idx + literal.length));
+    }
+
+    // =========================================================================
+    // 7. RENDERIZADO DE PREGUNTA ACTIVA Y RESULTADOS DE RONDA
+    // =========================================================================
+    function renderCurrentQuestion() {
+      const container = document.getElementById("playContainer");
+      if (!gameState.roundItems.length) {
+        container.innerHTML = `
+          <div class="retro-panel-header">
+            <span class="retro-title">🕹️ SIN RONDA ACTIVA</span>
+          </div>
+          <p style="margin-bottom:12px;">Seleccioná un cartucho en la Sala Arcade o hacé clic abajo para iniciar una partida inmediata.</p>
+          <button class="btn-arcade" onclick="startNewRound()">▶ INICIAR PARTIDA AHORA</button>
+        `;
+        return;
+      }
+
+      if (gameState.currentIndex >= gameState.roundItems.length) {
+        renderRoundSummary();
+        return;
+      }
+
+      const item = gameState.roundItems[gameState.currentIndex];
+      const isConfirmed = gameState.confirmed;
+
+      if (gameState.mode === "semantic") {
+        renderSemanticQuestion(container, item, isConfirmed);
+      } else if (gameState.mode === "lexical") {
+        renderLexicalQuestion(container, item, isConfirmed);
+      } else {
+        renderAuditQuestion(container, item, isConfirmed);
+      }
+      updateHUD();
+      syncAccessibility();
+    }
+
+    function renderSemanticQuestion(container, item, isConfirmed) {
+      const charLen = (item.text || "").length;
+      const complexityLabel = charLen < 130 ? "FÁCIL / BÁSICO (<130c)" : (charLen <= 250 ? "NORMAL / AVANZADO (130-250c)" : "DIFÍCIL / EXPERTO (>250c)");
+
+      const dims = [
+        { key: "cat", title: "1. Categoría Clínica", help: "Jerarquía SNOMED CT habilitada (Hallazgo, Procedimiento, Fármaco)", options: SEMANTIC_OPTIONS.cat },
+        { key: "pol", title: "2. Polaridad", help: "Activo (presente) vs. Negado (ausente/descartado explícitamente)", options: SEMANTIC_OPTIONS.pol },
+        { key: "cert", title: "3. Grado de Certeza", help: "Confirmado vs. Sospecha ('probable') vs. Diferencial ('vs')", options: SEMANTIC_OPTIONS.cert },
+        { key: "temp", title: "4. Temporalidad", help: "Actual (episodio en curso) vs. Histórico (antecedente pasado)", options: SEMANTIC_OPTIONS.temp },
+        { key: "suj", title: "5. Sujeto de la Relación", help: "Paciente vs. Familiar / Tercero (antecedente heredofamiliar o cuidador)", options: SEMANTIC_OPTIONS.suj }
+      ];
+
+      const dimCardsHtml = dims.map(d => {
+        const chosen = gameState.currentAnswers[d.key];
+        const correctVal = item[d.key];
+        const cardClass = isConfirmed ? (chosen === correctVal ? "correct-card" : "wrong-card") : "";
+        const btns = d.options.map(opt => {
+          let cls = "opt-btn";
+          if (chosen === opt) cls += " selected";
+          if (isConfirmed) {
+            if (opt === correctVal) cls += " correct-opt";
+            else if (chosen === opt && chosen !== correctVal) cls += " wrong-opt";
+          }
+          return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="${d.key}" data-answer-value="${escapeHtml(opt)}">${opt}</button>`;
+        }).join("");
+
+        return `
+          <div class="dim-card ${cardClass}">
+            <div class="dim-header">
+              <span class="dim-title">${d.title}</span>
+              ${isConfirmed ? `<span class="badge-chip ${chosen === correctVal ? '' : 'danger'}">${chosen === correctVal ? '✓ +1 PT' : '✗ Correcto: ' + correctVal}</span>` : ''}
+            </div>
+            <div class="dim-help">${d.help}</div>
+            <div class="options-list">${btns}</div>
+          </div>
+        `;
+      }).join("");
+
+      const chosenSctid = gameState.currentAnswers.sctid;
+      const sctidCardClass = isConfirmed ? (chosenSctid === item.sctid ? "correct-card" : "wrong-card") : "";
+      const termBtns = (item._termChoices || []).map(choice => {
+        let cls = "opt-btn";
+        if (chosenSctid === choice.sctid) cls += " selected";
+        if (isConfirmed) {
+          if (choice.sctid === item.sctid) cls += " correct-opt";
+          else if (chosenSctid === choice.sctid && chosenSctid !== item.sctid) cls += " wrong-opt";
+        }
+        return `
+          <button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="sctid" data-answer-value="${escapeHtml(choice.sctid)}">
+            <div><strong>Código SNOMED CT ${escapeHtml(choice.sctid)}</strong></div>
+            <div style="font-size:0.74rem; opacity:0.9;">${escapeHtml(choice.term)}</div>
+            ${isConfirmed && choice.reason ? `<div class="dim-help">${escapeHtml(choice.reason)}</div>` : ""}
+          </button>
+        `;
+      }).join("");
+
+      const allAnswered = ["cat", "pol", "cert", "temp", "suj", "sctid"].every(k => Boolean(gameState.currentAnswers[k]));
+
+      container.innerHTML = `
+        <div class="retro-panel-header">
+          <div>
+            <span class="retro-title">🧠 CASO ${gameState.currentIndex + 1} DE ${gameState.roundItems.length} // [${escapeHtml(item.id)}]</span>
+            <span class="badge-chip cyan" style="margin-left:6px;">${item.specialty || "Clínica"}</span>
+            <span class="badge-chip amber" style="margin-left:4px;">${complexityLabel}</span>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            ${(gameState.roundConfig?.timer ?? gameState.timerEnabled) ? `<span class="badge-chip amber" id="timerLiveBadge">⏱️ ${gameState.timeLeft}s</span>` : ""}
+            <span class="badge-chip">${item.mappingStatus || "human_agreement"}</span>
+          </div>
+        </div>
+
+        <div class="note-meta-bar">
+          <span>📋 <strong>Caso ID:</strong> ${escapeHtml(item.caseId)}</span>
+          <span>• <strong>Span literal resaltado:</strong> <code>"${escapeHtml(item.literal)}"</code></span>
+          <span>• <strong>Longitud:</strong> ${charLen} caracteres</span>
+        </div>
+
+        <div class="note-terminal">
+          ${highlightLiteral(item.text, item.literal)}
+          <p class="edu-warning">Práctica educativa con escenarios adaptados.</p>
+        </div>
+
+        ${gameState.hintUsed ? `
+          <div class="edu-warning" style="margin-bottom:12px;">
+            💡 <strong>PISTA DEL PIPELINE SEMANTIAR:</strong> La mención <code>"${escapeHtml(item.literal)}"</code> pertenece a la jerarquía <strong>${escapeHtml(item.cat)}</strong> y su código SNOMED CT termina en <code>...${item.sctid.slice(-4)}</code>. ${escapeHtml(item.rationale.slice(0, 95))}...
+          </div>
+        ` : ""}
+
+        <div class="dimensions-grid">
+          ${dimCardsHtml}
+          <div class="dim-card full-span ${sctidCardClass}">
+            <div class="dim-header">
+              <span class="dim-title">6. ¿Qué concepto corresponde?</span>
+              ${isConfirmed ? `<span class="badge-chip ${chosenSctid === item.sctid ? '' : 'danger'}">${chosenSctid === item.sctid ? '✓ +1 PT (Código correcto)' : '✗ Correcto: ' + item.sctid}</span>` : ''}
+            </div>
+            <div class="dim-help">Seleccioná el concepto que corresponde al literal resaltado, sin añadir información que el escenario no documenta:</div>
+            <div class="snomed-options-grid">${termBtns}</div>
+          </div>
+        </div>
+
+        ${isConfirmed ? `
+          <div class="feedback-box">
+            <div style="font-weight:800; color:var(--accent-cyan); margin-bottom:4px;">
+              📡 EXPLICACIÓN DEL EJERCICIO EDUCATIVO:
+            </div>
+            <p>${escapeHtml(item.rationale)}</p>
+            <p style="margin-top:6px; color:var(--phos-dim);">
+              <strong>Referencia:</strong> <code>${escapeHtml(item.sctid)} | ${escapeHtml(item.term)}</code> · Atributos: <code>${escapeHtml(item.cat)} | Pol:${escapeHtml(item.pol)} | Cert:${escapeHtml(item.cert)} | Temp:${escapeHtml(item.temp)} | Suj:${escapeHtml(item.suj)}</code>
+            </p>
+          </div>
+        ` : ""}
+
+        <div class="arcade-actions">
+          <button class="btn-arcade secondary" ${isConfirmed ? "disabled" : ""} onclick="triggerHint()">💡 Pista [H]</button>
+          ${!isConfirmed
+            ? `<button class="btn-arcade" ${!allAnswered ? "disabled" : ""} onclick="confirmCurrentAnswers()">⚡ CONFIRMAR RESPUESTAS (6 DIMENSIONES) [ENTER]</button>`
+            : `<button class="btn-arcade" onclick="nextQuestion()">▶ ${gameState.currentIndex + 1 < gameState.roundItems.length ? "SIGUIENTE CASO [ENTER]" : "VER RESULTADOS FINALES [ENTER]"}</button>`
+          }
+        </div>
+      `;
+    }
+
+    function renderLexicalQuestion(container, item, isConfirmed) {
+      const chosenForm = gameState.currentAnswers.formType;
+      const chosenFunc = gameState.currentAnswers.function;
+      const chosenSec = gameState.currentAnswers.section;
+      const chosenExp = gameState.currentAnswers.expansion;
+      const allAnswered = Boolean(chosenForm && chosenFunc && chosenSec && chosenExp);
+
+      const formBtns = LEXICAL_OPTIONS.formType.map(o => {
+        let cls = "opt-btn";
+        if (chosenForm === o.code) cls += " selected";
+        if (isConfirmed) {
+          if (o.code === item.formType) cls += " correct-opt";
+          else if (chosenForm === o.code) cls += " wrong-opt";
+        }
+        return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="formType" data-answer-value="${escapeHtml(o.code)}">${o.label}</button>`;
+      }).join("");
+
+      const funcBtns = LEXICAL_OPTIONS.function.map(o => {
+        let cls = "opt-btn";
+        if (chosenFunc === o.code) cls += " selected";
+        if (isConfirmed) {
+          if (o.code === item.function) cls += " correct-opt";
+          else if (chosenFunc === o.code) cls += " wrong-opt";
+        }
+        return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="function" data-answer-value="${escapeHtml(o.code)}">${o.label}</button>`;
+      }).join("");
+
+      const secBtns = LEXICAL_OPTIONS.section.map(sec => {
+        let cls = "opt-btn";
+        if (chosenSec === sec) cls += " selected";
+        if (isConfirmed) {
+          if (sec === item.section) cls += " correct-opt";
+          else if (chosenSec === sec) cls += " wrong-opt";
+        }
+        return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="section" data-answer-value="${escapeHtml(sec)}">${sec}</button>`;
+      }).join("");
+
+      const expBtns = (item._expChoices || []).map((exp, idx) => {
+        let cls = "opt-btn";
+        if (chosenExp === exp) cls += " selected";
+        if (isConfirmed) {
+          if (exp === item.expansion) cls += " correct-opt";
+          else if (chosenExp === exp) cls += " wrong-opt";
+        }
+                return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="expansion" data-answer-value="${escapeHtml(exp)}"><strong>[${idx + 1}]</strong> ${escapeHtml(exp)}</button>`;
+      }).join("");
+
+      container.innerHTML = `
+        <div class="retro-panel-header">
+          <div>
+            <span class="retro-title">🔤 CAPA LÉXICA v2 · CASO ${gameState.currentIndex + 1} DE ${gameState.roundItems.length}</span>
+            <span class="badge-chip purple" style="margin-left:6px;">${escapeHtml(item.specialty)}</span>
+          </div>
+          <span class="badge-chip">${escapeHtml(item.status)}</span>
+        </div>
+
+        <div class="note-meta-bar">
+          <span>• <strong>Forma breve / sigla:</strong> <code>"${escapeHtml(item.literal)}"</code></span>
+        </div>
+
+        <div class="note-terminal">
+          ${highlightLiteral(item.text, item.literal)}
+        </div>
+
+        ${gameState.hintUsed ? `
+          <div class="edu-warning" style="margin-bottom:12px;">
+            💡 <strong>PISTA CAPA LÉXICA v2:</strong> La forma <code>"${escapeHtml(item.literal)}"</code> aparece en la sección <strong>${escapeHtml(item.section)}</strong> y su sentido propuesto en el ejercicio comienza con <code>"${escapeHtml(item.expansion.slice(0, 12))}..."</code>.
+          </div>
+        ` : ""}
+
+        <div class="dimensions-grid">
+          <div class="dim-card ${isConfirmed ? (chosenForm === item.formType ? 'correct-card' : 'wrong-card') : ''}">
+            <div class="dim-header"><span class="dim-title">1. ¿Cómo está escrita?</span></div>
+            <div class="dim-help">Identificá el tipo de forma breve.</div>
+            <div class="options-list">${formBtns}</div>
+          </div>
+
+          <div class="dim-card ${isConfirmed ? (chosenFunc === item.function ? 'correct-card' : 'wrong-card') : ''}">
+            <div class="dim-header"><span class="dim-title">2. ¿Qué papel cumple?</span></div>
+            <div class="dim-help">Función sintáctico-clínica local dentro del fragmento</div>
+            <div class="options-list">${funcBtns}</div>
+          </div>
+
+          <div class="dim-card ${isConfirmed ? (chosenSec === item.section ? 'correct-card' : 'wrong-card') : ''}">
+            <div class="dim-header"><span class="dim-title">3. ¿En qué sección aparece?</span></div>
+            <div class="dim-help">Ubicación estructural dentro de la nota clínica</div>
+            <div class="options-list">${secBtns}</div>
+          </div>
+
+          <div class="dim-card full-span ${isConfirmed ? (chosenExp === item.expansion ? 'correct-card' : 'wrong-card') : ''}">
+            <div class="dim-header"><span class="dim-title">4. ¿Qué significa aquí?</span></div>
+            <div class="dim-help">Elegí el sentido previsto para este escenario educativo; no constituye validación de todos los usos de la forma:</div>
+            <div class="snomed-options-grid">${expBtns}</div>
+          </div>
+        </div>
+
+        ${isConfirmed ? `
+          <div class="feedback-box">
+            <div style="font-weight:800; color:var(--accent-cyan); margin-bottom:4px;">📡 EXPLICACIÓN EDUCATIVA (NO AUDITORÍA INDEPENDIENTE):</div>
+            <p>${escapeHtml(item.rationale)}</p>
+          </div>
+        ` : ""}
+
+        <div class="arcade-actions">
+          <button class="btn-arcade secondary" ${isConfirmed ? "disabled" : ""} onclick="triggerHint()">💡 Pista [H]</button>
+          ${!isConfirmed
+            ? `<button class="btn-arcade" ${!allAnswered ? "disabled" : ""} onclick="confirmCurrentAnswers()">⚡ CONFIRMAR ANOTACIÓN LÉXICA (4 DIMENSIONES) [ENTER]</button>`
+            : `<button class="btn-arcade" onclick="nextQuestion()">▶ ${gameState.currentIndex + 1 < gameState.roundItems.length ? "SIGUIENTE FORMA BREVE [ENTER]" : "VER RESULTADOS FINALES [ENTER]"}</button>`
+          }
+        </div>
+      `;
+    }
+
+    function renderAuditQuestion(container, item, isConfirmed) {
+      const chosenAction = gameState.currentAnswers.mappingAction;
+      const chosenFlag = gameState.currentAnswers.auditFlag;
+      const chosenSense = gameState.currentAnswers.validatedSense;
+      const allAnswered = Boolean(chosenAction && chosenFlag && chosenSense);
+
+      const actionBtns = AUDIT_OPTIONS.mappingAction.map(o => {
+        let cls = "opt-btn";
+        if (chosenAction === o.code) cls += " selected";
+        if (isConfirmed) {
+          if (o.code === item.mappingAction) cls += " correct-opt";
+          else if (chosenAction === o.code) cls += " wrong-opt";
+        }
+        return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="mappingAction" data-answer-value="${escapeHtml(o.code)}">${o.label}</button>`;
+      }).join("");
+
+      const flagBtns = AUDIT_OPTIONS.auditFlag.map(o => {
+        let cls = "opt-btn";
+        if (chosenFlag === o.code) cls += " selected";
+        if (isConfirmed) {
+          if (o.code === item.auditFlag) cls += " correct-opt";
+          else if (chosenFlag === o.code) cls += " wrong-opt";
+        }
+        return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="auditFlag" data-answer-value="${escapeHtml(o.code)}">${o.label}</button>`;
+      }).join("");
+
+      const senseBtns = (item._senseChoices || []).map((sense, idx) => {
+        let cls = "opt-btn";
+        if (chosenSense === sense) cls += " selected";
+        if (isConfirmed) {
+          if (sense === item.validatedSense) cls += " correct-opt";
+          else if (chosenSense === sense) cls += " wrong-opt";
+        }
+                return `<button class="${cls}" ${isConfirmed ? "disabled" : ""} data-answer-key="validatedSense" data-answer-value="${escapeHtml(sense)}"><strong>[${idx + 1}]</strong> ${escapeHtml(sense)}</button>`;
+      }).join("");
+
+      container.innerHTML = `
+        <div class="retro-panel-header">
+          <div>
+            <span class="retro-title">🛡️ AUDITORÍA TERMINOLÓGICA  · CASO ${gameState.currentIndex + 1} DE ${gameState.roundItems.length}</span>
+            <span class="badge-chip amber" style="margin-left:6px;">Revisión #${escapeHtml(item.reviewNumber)} </span>
+          </div>
+        </div>
+
+        <div class="note-terminal">
+          <div style="margin-bottom:6px;">🔎 <strong>Superficie auditada:</strong> <mark class="span-highlight">${escapeHtml(item.surface)}</mark></div>
+          <div style="font-size:0.86rem; color:var(--phos-dim); margin-bottom:8px;">${escapeHtml(item.contextNote)}</div>
+          <div style="background:#081a10; border:1px dashed var(--accent-amber); padding:8px 12px; border-radius:6px;">
+            🤖 <strong>Candidato automático propuesto por SapBERT + FAISS:</strong><br/>
+            <code>${escapeHtml(item.faissCandidate)}</code> · <strong>Similitud:</strong> <span style="color:var(--accent-amber); font-weight:900;">${item.faissScore.toFixed(4)}</span>
+          </div>
+        </div>
+
+        ${gameState.hintUsed ? `
+          <div class="edu-warning" style="margin-bottom:12px;">
+            💡 <strong>PISTA DE AUDITORÍA :</strong> ${escapeHtml(item.rationale.slice(0, 115))}...
+          </div>
+        ` : ""}
+
+        <div class="dimensions-grid">
+          <div class="dim-card ${isConfirmed ? (chosenAction === item.mappingAction ? 'correct-card' : 'wrong-card') : ''}">
+            <div class="dim-header"><span class="dim-title">1. ¿Qué decisión corresponde?</span></div>
+            <div class="dim-help">Elegí la decisión que corresponde al candidato presentado.</div>
+            <div class="options-list">${actionBtns}</div>
+          </div>
+
+          <div class="dim-card ${isConfirmed ? (chosenFlag === item.auditFlag ? 'correct-card' : 'wrong-card') : ''}">
+            <div class="dim-header"><span class="dim-title">2. ¿Por qué?</span></div>
+            <div class="dim-help">Identificá el motivo de la revisión.</div>
+            <div class="options-list">${flagBtns}</div>
+          </div>
+
+          <div class="dim-card full-span ${isConfirmed ? (chosenSense === item.validatedSense ? 'correct-card' : 'wrong-card') : ''}">
+            <div class="dim-header"><span class="dim-title">3. Sentido Léxico / Criterio Aceptado por el Responsable</span></div>
+            <div class="dim-help">Elegí la interpretación que corresponde a esta aparición.</div>
+            <div class="snomed-options-grid">${senseBtns}</div>
+          </div>
+        </div>
+
+        ${isConfirmed ? `
+          <div class="feedback-box">
+            <div style="font-weight:800; color:var(--accent-amber); margin-bottom:4px;">📡 EXPLICACIÓN DE LA REVISIÓN:</div>
+            <p>${escapeHtml(item.rationale)}</p>
+          </div>
+        ` : ""}
+
+        <div class="arcade-actions">
+          <button class="btn-arcade secondary" ${isConfirmed ? "disabled" : ""} onclick="triggerHint()">💡 Pista [H]</button>
+          ${!isConfirmed
+            ? `<button class="btn-arcade" ${!allAnswered ? "disabled" : ""} onclick="confirmCurrentAnswers()">⚡ EMITIR DICTAMEN DE AUDITORÍA (3 DIMENSIONES) [ENTER]</button>`
+            : `<button class="btn-arcade" onclick="nextQuestion()">▶ ${gameState.currentIndex + 1 < gameState.roundItems.length ? "SIGUIENTE AUDITORÍA [ENTER]" : "VER RESULTADOS FINALES [ENTER]"}</button>`
+          }
+        </div>
+      `;
+    }
+
+    function selectAnswer(key, val) {
+      if (gameState.confirmed) return;
+      sfxClick();
+      
+gameState.currentAnswers[key] = val;
+      document.querySelectorAll('button[data-answer-key]').forEach(btn => {
+        if (btn.dataset.answerKey !== key) return;
+        const selected = btn.dataset.answerValue === val;
+        btn.classList.toggle("selected",selected); btn.setAttribute("aria-pressed",String(selected));
+      });
+      const required = gameState.mode === "semantic" ? ["cat","pol","cert","temp","suj","sctid"] : gameState.mode === "lexical" ? ["formType","function","section","expansion"] : ["mappingAction","auditFlag","validatedSense"];
+      const confirm = document.querySelector('#playContainer .arcade-actions .btn-arcade:last-child');
+      if (confirm) confirm.disabled = !required.every(k => Boolean(gameState.currentAnswers[k]));
+
+    }
+
+    function confirmCurrentAnswers(timedOut = false) {
+      if (gameState.confirmed) return;
+
+      const item = gameState.roundItems[gameState.currentIndex];
+      if (!item) return;
+      let keys = [];
+      if (gameState.mode === "semantic") {
+        keys = ["cat", "pol", "cert", "temp", "suj", "sctid"];
+      } else if (gameState.mode === "lexical") {
+        keys = ["formType", "function", "section", "expansion"];
+      } else {
+        keys = ["mappingAction", "auditFlag", "validatedSense"];
+      }
+
+      if (!timedOut && !keys.every(k => Boolean(gameState.currentAnswers[k]))) {
+        return;
+      }
+
+      clearInterval(gameState.timerInterval);
+      let earned = 0;
+      keys.forEach(k => {
+        if (gameState.currentAnswers[k] === item[k]) earned++;
+      });
+
+      const maxPts = keys.length;
+      gameState.confirmed = true;
+      gameState.roundScore += earned;
+      gameState.roundMaxScore += maxPts;
+
+      if (earned === maxPts) {
+        gameState.streak++;
+        gameState.bestRoundStreak = Math.max(gameState.bestRoundStreak, gameState.streak);
+        sfxCorrect();
+      } else {
+        gameState.streak = 0;
+        if (earned < Math.ceil(maxPts / 2)) {
+          gameState.lives = Math.max(0, gameState.lives - 1);
+        }
+        sfxWrong();
+      }
+
+      gameState.history.push({
+        item,
+        answers: { ...gameState.currentAnswers },
+        earned,
+        maxPts
+      });
+
+      renderCurrentQuestion();
+      announce("Caso confirmado: "+earned+" de "+maxPts+" respuestas coinciden con la referencia.");
+      document.querySelector("#playContainer .arcade-actions .btn-arcade:last-child")?.focus();
+    }
+
+    function nextQuestion() {
+      if (!gameState.confirmed) return;
+      sfxClick();
+      gameState.currentIndex++;
+      gameState.timerInitialized = false;
+      gameState.currentAnswers = {};
+      gameState.confirmed = false;
+      gameState.hintUsed = false;
+
+      if (gameState.currentIndex >= gameState.roundItems.length) {
+        saveStats(gameState.roundScore, gameState.roundMaxScore, gameState.bestRoundStreak);
+        renderRoundSummary();
+      } else {
+        startQuestionTimer();
+        renderCurrentQuestion();
+        focusCase();
+      }
+    }
+
+    function triggerHint() {
+      if (gameState.view !== "play" || gameState.confirmed || !gameState.roundItems[gameState.currentIndex]) return;
+      sfxHint();
+      if (!gameState.hintUsed) gameState.hints++;
+      gameState.hintUsed = true;
+      renderCurrentQuestion();
+    }
+
+    function triggerPrimaryAction() {
+      if (gameState.view === "menu") {
+        startNewRound();
+      } else if (gameState.view === "play") {
+        if (gameState.currentIndex >= gameState.roundItems.length) {
+          startNewRound();
+        } else if (!gameState.confirmed) {
+          confirmCurrentAnswers(false);
+        } else {
+          nextQuestion();
+        }
+      }
+    }
+
+    function arcadeStep(dir) {
+      if (gameState.view === "play" && gameState.confirmed && dir > 0) {
+        nextQuestion();
+      }
+    }
+
+    function renderRoundSummary() {
+      clearInterval(gameState.timerInterval);
+      const container = document.getElementById("playContainer");
+      const Z = gameState.roundScore;
+      const W = gameState.roundMaxScore || 1;
+      const acc = Math.round((Z / W) * 100);
+
+      const badgeImpecable = Z >= 0.9 * W;
+      const badgeRacha = gameState.bestRoundStreak >= 3;
+
+      const rowsHtml = gameState.history.map((h, i) => {
+        const label = h.item.literal || h.item.surface || h.item.id;
+        const ref = h.item.term ? `${h.item.sctid} | ${h.item.term}` : (h.item.expansion || h.item.validatedSense);
+        return `
+          <tr>
+            <td>#${i + 1}</td>
+            <td><code>${escapeHtml(label)}</code></td>
+            <td>${escapeHtml(ref)}</td>
+            <td><strong>${h.earned} / ${h.maxPts}</strong></td>
+          </tr>
+        `;
+      }).join("");
+
+      container.innerHTML = `
+        <div class="retro-panel-header">
+          <span class="retro-title">🏁 RONDA COMPLETADA // INFORME DE DESEMPEÑO</span>
+          <span class="badge-chip amber">ACIERTOS: ${acc}% (${Z}/${W} PTS)</span>
+        </div>
+
+        <div class="hud-bar" style="margin-bottom:14px;">
+          <div class="hud-cell">
+            <span class="hud-label">Puntaje de Ronda</span>
+            <span class="hud-val amber">${Z} / ${W}</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">Aciertos del juego</span>
+            <span class="hud-val cyan">${acc}%</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">Mejor Racha Perfecta</span>
+            <span class="hud-val">x${gameState.bestRoundStreak}</span>
+          </div>
+          <div class="hud-cell">
+            <span class="hud-label">Insignias de Sesión</span>
+            <span class="hud-val">${badgeImpecable ? "🏆 Impecable " : ""}${badgeRacha ? "⚡ Racha Dorada" : "✓ Práctica completada"}</span>
+          </div>
+        </div>
+
+        <div class="codex-table-wrap" style="margin-bottom:14px;">
+          <table class="codex-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Mención / Superficie</th>
+                <th>Referencia SemantIAr (SNOMED CT / Expansión / Revisión)</th>
+                <th>Puntaje</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+
+        <div class="arcade-actions">
+          <button class="btn-arcade secondary" onclick="switchView('menu')">🏠 Volver a Sala Arcade</button>
+          <button class="btn-arcade" onclick="startNewRound()">🔄 JUGAR OTRA RONDA [ENTER]</button>
+        </div>
+      `;
+      updateHUD();
+      syncAccessibility();
+      focusCase();
+    }
+
+    // =========================================================================
+    // 8. CODEX EXPLORER & CARGADOR DE ARCHIVOS JSON/JSONL + PLANTILLA 
+    // =========================================================================
+    function optionLabel(options, code) { return options.find(o => o.code === code)?.label || "No informado"; }
+
+    function renderCodexTable() {
+      const q = (document.getElementById("codexSearch").value || "").toLowerCase().trim();
+      const filter = document.getElementById("codexFilter").value;
+      const tbody = document.getElementById("codexTableBody");
+      let rows = [];
+
+      if (filter === "all" || filter === "semantic") {
+        SEMANTIC_CASES.forEach(c => {
+          rows.push({
+            layer: "Clínica 6D",
+            surface: c.literal,
+            cat: c.cat,
+            ref: `${c.sctid} | ${c.term}`,
+            attrs: `Pol:${c.pol} · Cert:${c.cert} · Temp:${c.temp} · Suj:${c.suj}`,
+            meta: `${c.specialty} (${c.mappingStatus})`
+          });
+        });
+      }
+      if (filter === "all" || filter === "lexical") {
+        LEXICAL_CASES.forEach(l => {
+          rows.push({
+            layer: "Léxica v2",
+            surface: l.literal,
+            cat: `${optionLabel(LEXICAL_OPTIONS.formType, l.formType)} · ${optionLabel(LEXICAL_OPTIONS.function, l.function)}`,
+            ref: l.expansion,
+            attrs: `Sección: ${l.section}`,
+            meta: `${l.specialty} (${l.status})`
+          });
+        });
+      }
+      if (filter === "all" || filter === "audit") {
+        AUDIT_PR2_CASES.forEach(a => {
+          rows.push({
+            layer: `Auditoría  (#${a.reviewNumber})`,
+            surface: a.surface,
+            cat: optionLabel(AUDIT_OPTIONS.mappingAction, a.mappingAction),
+            ref: `FAISS: ${a.faissCandidate} (${a.faissScore.toFixed(4)})`,
+            attrs: `Resolución: ${a.validatedSense}`,
+            meta: optionLabel(AUDIT_OPTIONS.auditFlag, a.auditFlag)
+          });
+        });
+      }
+
+      if (q) {
+        rows = rows.filter(r =>
+          r.surface.toLowerCase().includes(q) ||
+          r.ref.toLowerCase().includes(q) ||
+          r.attrs.toLowerCase().includes(q) ||
+          r.meta.toLowerCase().includes(q)
+        );
+      }
+
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td><span class="badge-chip">${escapeHtml(r.layer)}</span></td>
+          <td><strong><code>${escapeHtml(r.surface)}</code></strong></td>
+          <td>${escapeHtml(r.cat)}</td>
+          <td>${escapeHtml(r.ref)}</td>
+          <td>${escapeHtml(r.attrs)}</td>
+          <td>${escapeHtml(r.meta)}</td>
+        </tr>
+      `).join("");
+      syncAccessibility();
+    }
+
+    // =========================================================================
+    // 9. ATAJOS DE TECLADO ARCADE
+    // =========================================================================
+    document.addEventListener("click", function(e) {
+      const button = e.target.closest("button[data-answer-key]");
+      if (button && !button.disabled) selectAnswer(button.dataset.answerKey, button.dataset.answerValue);
+    });
+    window.addEventListener("keydown", function(e) {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes((e.target && e.target.tagName) || "")) return;
+      if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
+      if (e.key === "Enter" && e.target.closest?.("button, a, summary")) return;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        triggerPrimaryAction();
+      } else if (e.key.toLowerCase() === "h") {
+        e.preventDefault();
+        triggerHint();
+      } else if (e.key.toLowerCase() === "m") {
+        e.preventDefault();
+        toggleSFX();
+      } else if (e.key.toLowerCase() === "c") {
+        e.preventDefault();
+        toggleCRT();
+      } else if (e.key === "F1") {
+        e.preventDefault();
+        switchView("menu");
+      } else if (e.key === "F2") {
+        e.preventDefault();
+        switchView("play");
+      } else if (e.key === "F3") {
+        e.preventDefault();
+        switchView("codex");
+
+      }
+    });
+
+    // Inicializar al cargar
+    window.addEventListener("DOMContentLoaded", function() {
+      renderStatsPanel();
+      updateFilteredPoolCount();
+      renderCodexTable();
+    });
+  
+
+function focusCase() {
+  const title=document.querySelector("#playContainer .retro-title");
+  title?.setAttribute("tabindex","-1");
+  title?.focus();
+  title?.scrollIntoView({block:"start",behavior:"instant"});
+}
+function navigateView(view) {
+  switchView(view);
+  if (view === "play") { focusCase(); return; }
+  const section = document.getElementById(view === "menu" ? "viewMenu" : "viewCodex");
+  section?.setAttribute("tabindex", "-1");
+  section?.focus();
+  section?.scrollIntoView({block:"start", behavior:"instant"});
+}
+function showRanking() {
+  switchView("menu");
+  const panel = document.getElementById("rankingPanel");
+  panel.focus();
+  panel.scrollIntoView({block:"start", behavior:"instant"});
+}
+function announce(message) { document.getElementById("liveStatus").textContent = message; }
+function syncAccessibility() {
+  document.querySelectorAll("[data-answer-key]").forEach(btn => {
+    btn.setAttribute("aria-pressed",String(btn.classList.contains("selected")));
+    if (gameState.confirmed) btn.setAttribute("aria-label",btn.textContent.trim()+
+      (btn.classList.contains("correct-opt") ? " · respuesta de referencia" : btn.classList.contains("wrong-opt") ? " · tu respuesta, distinta de la referencia" : ""));
+  });
+  document.querySelectorAll("#playContainer .dim-card").forEach(card => {
+    card.setAttribute("role","group");
+    card.setAttribute("aria-label",card.querySelector(".dim-title")?.textContent || "Pregunta");
+  });
+  document.querySelectorAll(".hw-btn, [id^=diff_], [id^=len_]").forEach(btn =>
+    btn.setAttribute("aria-pressed",String(btn.classList.contains("active") || btn.classList.contains("selected"))));
+  ["Menu","Play","Codex"].forEach(n => document.getElementById("tab"+n).setAttribute("aria-current",gameState.view === n.toLowerCase() ? "page" : "false"));
+  document.querySelectorAll(".mobile-nav button").forEach((btn,i) => {
+    btn.setAttribute("aria-current", ["menu","play","codex"][i] === gameState.view ? "page" : "false");
+  });
+  document.querySelectorAll("table.codex-table").forEach(table => {
+    const labels = Array.from(table.querySelectorAll("thead th"), th => th.textContent);
+    table.querySelectorAll("tbody tr").forEach(row => {
+      Array.from(row.children).forEach((cell,i) => cell.dataset.label = labels[i] || "");
+    });
+  });
+}
+document.addEventListener("click", () => syncAccessibility());
+window.addEventListener("DOMContentLoaded", () => {
+  syncAccessibility();
+  updateHUD();
+  const settings = document.querySelector(".hardware-settings");
+  if (settings && matchMedia("(max-width: 720px)").matches) settings.open = false;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || matchMedia("(max-width: 720px)").matches) {
+    if (crtEnabled) toggleCRT();
+  }
+  syncAccessibility();
+});
+
+let searchDebounce; function scheduleCodexSearch() { clearTimeout(searchDebounce); searchDebounce = setTimeout(renderCodexTable,150); }
+

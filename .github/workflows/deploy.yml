@@ -22,6 +22,9 @@ jobs:
           node-version: '20'
           cache: 'npm'
       
+      - name: Verify arcade behavior
+        run: node arcade/tests/game.test.mjs
+
       - name: Install dependencies 📦
         run: npm ci
 
@@ -38,6 +41,11 @@ jobs:
 
       - name: Disable Jekyll processing 🔗
         run: touch out/.nojekyll
+
+      - name: Include editable retro arcade
+        run: |
+          cp arcade/index.html arcade/styles.css arcade/game.js arcade/scoreboard.js out/
+          cp arcade/documentation.html arcade/LICENSE.txt arcade/distractor-bank.json out/
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
